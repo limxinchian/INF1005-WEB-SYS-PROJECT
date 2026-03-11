@@ -1,8 +1,9 @@
 <?php
-    $host = "localhost";
-    $dbname = "mealmate";
-    $user = "root";
-    $password = "";
+    $env = parse_ini_file('.env');
+    $host = $env["DB_HOST"];
+    $dbname = $env["DB_NAME"];
+    $user = $env["DB_USER"];
+    $password = $env["DB_PASS"];
 
     try{
         $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $password, [
