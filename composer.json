@@ -1,0 +1,17 @@
+{
+    "name": "gohjiaxin/inf1005-web-sys-project",
+    "autoload": {
+        "psr-4": {
+            "Gohjiaxin\\Inf1005WebSysProject\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Goh Jia Xin",
+            "email": "135586980+GohJiaXin@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
+}
