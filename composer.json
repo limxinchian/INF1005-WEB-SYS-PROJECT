@@ -1,0 +1,17 @@
+{
+    "name": "yapyi/inf1005-web-sys-project",
+    "autoload": {
+        "psr-4": {
+            "Yapyi\\Inf1005WebSysProject\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "wynnnnnnnnnnn",
+            "email": "yapyihuiwynn@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
+}
