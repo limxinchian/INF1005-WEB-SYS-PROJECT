@@ -1,0 +1,30 @@
+$primary: #239163;
+$secondary: #73E2A7;
+$light: #e9f6dc;
+$dark: #1B512D;
+
+$body-bg: $light;
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+$utilities: map-merge(
+    $utilities,
+    (
+        "width": map-merge(
+            map-get($utilities, "width"),
+            (
+                values: map-merge(
+                    map-get(map-get($utilities, "width"), "values"),
+                    (
+                        "nav_button": 110px,
+                        "45": 45%,
+                        "65": 65%,
+                        "70": 70%,
+                    )
+                )
+            )
+        )
+    )
+);
+
+@import "../../node_modules/bootstrap/scss/utilities/api";
