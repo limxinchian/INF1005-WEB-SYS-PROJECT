@@ -126,6 +126,8 @@ try {
         <a href="recipes/recipes.php">View All Recipes</a>   
         <a href="users/users.php">View All Users</a>
         <a href="ingredients/ingredients.php">Manage Ingredients</a>
+        <a href="allergens/allergens.php">Manage Allergens</a>
+        <a href="tags/tags.php">Manage Tags</a>
     </div>
 
     <br>
