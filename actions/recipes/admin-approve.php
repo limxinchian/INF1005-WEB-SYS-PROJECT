@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../includes/mailer.php';
+require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../includes/mailer.php';
 // require_once __DIR__ . '/../includes/admin-guard.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../admin/pending.php');
+    header('Location: ../../admin/pending.php');
     exit();
 }
 
@@ -55,7 +55,7 @@ try {
         $mailWarning = ' However, email notification could not be sent.';
     }
 
-    header('Location: ../admin/pending.php?message=' . urlencode("Recipe {$newStatus} successfully." . $mailWarning));
+    header('Location: ../../admin/pending.php?message=' . urlencode("Recipe {$newStatus} successfully." . $mailWarning));
     exit();
 } catch (Throwable $e) {
     die('Failed to update recipe status: ' . $e->getMessage());

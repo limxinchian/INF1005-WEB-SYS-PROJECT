@@ -123,6 +123,16 @@ try {
 
     <div class="links">
         <a href="pending.php">View Pending Recipes</a>
+        <a href="recipes/recipes.php">View All Recipes</a>   
+        <a href="users/users.php">View All Users</a>
+        <a href="ingredients/ingredients.php">Manage Ingredients</a>
+    </div>
+
+    <br>
+
+    <div class="links">
+        <a href="recipes/recipes-trash.php">View Deleted Recipes</a>
+        <a href="users/users-trash.php">View Deleted Users</a>
     </div>
     <h2>Recent Pending Recipes</h2>
 
