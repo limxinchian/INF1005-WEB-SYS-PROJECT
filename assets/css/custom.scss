@@ -1,7 +1,8 @@
-$primary: #239163;
-$secondary: #73E2A7;
-$light: #e9f6dc;
-$dark: #1B512D;
+$primary: #FF9F1C;
+$secondary: #FFBF69;
+$light: #FFFFFF;
+$dark: #2EC4B6;
+$tertiary: #CBF3F0;
 
 $body-bg: $light;
 
@@ -17,9 +18,25 @@ $utilities: map-merge(
                     map-get(map-get($utilities, "width"), "values"),
                     (
                         "nav_button": 110px,
+                        "hero": 5000px,
                         "45": 45%,
                         "65": 65%,
                         "70": 70%,
+                    )
+                )
+            )
+        ),
+        "padding-y": map-merge(
+            map-get($utilities, "padding-y"),
+            (
+                values: map-merge(
+                    map-get(map-get($utilities, "padding-y"), "values"),
+                    (
+                        "6": $spacer * 6,
+                        "7": $spacer * 7,
+                        "8": $spacer * 8,
+                        "9": $spacer * 9,
+                        "10": $spacer * 10,
                     )
                 )
             )
