@@ -5,6 +5,8 @@
 //  OWNER   : Member 1
 // ============================================================
 require_once 'config/session.php';
+require_once 'config/db.php';
+
 // Read email back from GET parameter if redirected from failed login
 $previousEmail = htmlspecialchars($_GET['email'] ?? '');
 
@@ -20,8 +22,14 @@ if (isLoggedIn()) {
 // Generate CSRF token
 $token = generateCsrfToken();
 
+// Get reCAPTCHA site key from .env
+$recaptchaSiteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
+
 require_once 'includes/header.php';
 ?>
+
+<!-- reCAPTCHA Script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <div class="row justify-content-center">
     <div class="col-md-5 col-lg-4">
@@ -43,7 +51,8 @@ require_once 'includes/header.php';
                       novalidate>
 
                     <!-- CSRF Token -->
-                    <input type="hidden" name="csrf_token"
+                    <input type="hidden"
+                           name="csrf_token"
                            value="<?= htmlspecialchars($token) ?>">
 
                     <!-- Email -->
@@ -51,7 +60,7 @@ require_once 'includes/header.php';
                         <label for="email" class="form-label fw-semibold">
                             Email Address
                         </label>
-                        <div class="input-group has-validation">
+                        <div class="input-group">
                             <span class="input-group-text bg-light">
                                 &#128231;
                             </span>
@@ -66,11 +75,11 @@ require_once 'includes/header.php';
                                 required
                                 autofocus
                             >
-                        
                         </div>
-                        <!-- JS error message goes here -->
-                        <div id="emailError" class="text-danger small mt-1"
-                             style="display:none;"></div>
+                        <div id="emailError"
+                             class="text-danger small mt-1"
+                             style="display:none;">
+                        </div>
                     </div>
 
                     <!-- Password -->
@@ -78,7 +87,7 @@ require_once 'includes/header.php';
                         <label for="password" class="form-label fw-semibold">
                             Password
                         </label>
-                        <div class="input-group has-validation">
+                        <div class="input-group">
                             <span class="input-group-text bg-light">
                                 &#128274;
                             </span>
@@ -100,9 +109,10 @@ require_once 'includes/header.php';
                                 &#128065;
                             </button>
                         </div>
-                        <!-- JS error message goes here -->
-                        <div id="passwordError" class="text-danger small mt-1"
-                             style="display:none;"></div>
+                        <div id="passwordError"
+                             class="text-danger small mt-1"
+                             style="display:none;">
+                        </div>
                     </div>
 
                     <!-- Remember Me -->
@@ -116,8 +126,23 @@ require_once 'includes/header.php';
                         </label>
                     </div>
 
+                    <!-- Google reCAPTCHA -->
+                    <div class="mb-3">
+                        <div
+                            class="g-recaptcha"
+                            data-sitekey="<?= htmlspecialchars($recaptchaSiteKey) ?>"
+                            data-callback="onRecaptchaSuccess"
+                            data-expired-callback="onRecaptchaExpired"
+                        ></div>
+                        <div id="recaptchaError"
+                             class="text-danger small mt-1"
+                             style="display:none;">
+                            Please complete the reCAPTCHA verification.
+                        </div>
+                    </div>
+
                     <!-- Submit Button -->
-                    <div class="d-grid mt-4">
+                    <div class="d-grid mt-3">
                         <button type="submit"
                                 class="btn btn-success btn-lg"
                                 id="submitBtn">
@@ -128,13 +153,20 @@ require_once 'includes/header.php';
                 </form>
 
             </div>
-
             <!-- Card Footer -->
             <div class="card-footer text-center bg-light py-3">
                 <small class="text-muted">
                     Don't have an account?
                     <a href="register.php" class="text-success fw-semibold">
                         Register here
+                    </a>
+                </small>
+            </div>
+            <div class="card-footer text-center bg-light py-3">
+                <small class="text-muted">
+                    Forgot Password?
+                    <a href="forgotpassword.php" class="text-success fw-semibold">
+                        Forgot Password
                     </a>
                 </small>
             </div>
@@ -145,6 +177,18 @@ require_once 'includes/header.php';
 </div>
 
 <script>
+// ── reCAPTCHA State ───────────────────────────────────────
+let recaptchaDone = false;
+
+function onRecaptchaSuccess() {
+    recaptchaDone = true;
+    document.getElementById('recaptchaError').style.display = 'none';
+}
+
+function onRecaptchaExpired() {
+    recaptchaDone = false;
+}
+
 // ── Show/Hide Password ────────────────────────────────────
 document.getElementById('togglePassword').addEventListener('click', function () {
     const pwd  = document.getElementById('password');
@@ -160,9 +204,10 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     const email    = document.getElementById('email');
     const password = document.getElementById('password');
 
-    // Reset errors first
+    // Reset all errors
     setError(email,    'emailError',    null);
     setError(password, 'passwordError', null);
+    document.getElementById('recaptchaError').style.display = 'none';
 
     // Validate email
     if (email.value.trim() === '') {
@@ -179,25 +224,30 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         valid = false;
     }
 
-    // Block submission if invalid
+    // Validate reCAPTCHA
+    if (!recaptchaDone) {
+        document.getElementById('recaptchaError').style.display = 'block';
+        valid = false;
+    }
+
+    // Stop form if any error
     if (!valid) {
         e.preventDefault();
         return;
     }
 
-    // Show loading spinner on button when form is valid
+    // Show loading spinner on button
     const btn     = document.getElementById('submitBtn');
     btn.disabled  = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" ' +
-                   'role="status" aria-hidden="true"></span>Signing in...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"' +
+                   ' role="status" aria-hidden="true"></span>Signing in...';
 });
 
-// ── Show or clear error on a field ────────────────────────
+// ── Show or Clear Field Error ─────────────────────────────
 function setError(input, errorId, message) {
     const errorDiv = document.getElementById(errorId);
     if (message) {
         input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
         errorDiv.textContent   = message;
         errorDiv.style.display = 'block';
     } else {
@@ -207,7 +257,7 @@ function setError(input, errorId, message) {
     }
 }
 
-// ── Clear error as user types ─────────────────────────────
+// ── Clear Error When User Starts Typing ──────────────────
 document.getElementById('email').addEventListener('input', function () {
     setError(this, 'emailError', null);
 });

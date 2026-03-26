@@ -19,17 +19,42 @@ verifyCsrfToken();
 $email    = trim(filter_input(INPUT_POST, 'email',    FILTER_SANITIZE_EMAIL));
 $password = trim(filter_input(INPUT_POST, 'password', FILTER_DEFAULT));
 
-// Basic validation — pass email back so login form can prefill it
+// Validate not empty
 if (empty($email) || empty($password)) {
     setFlash('warning', 'Please enter both your email and password.');
     redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email ?? ''));
 }
 
-// Email format validation
+// Validate email format
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     setFlash('warning', 'Please enter a valid email address.');
     redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
 }
+
+// ── Verify reCAPTCHA ──────────────────────────────────────
+$recaptchaSecret   = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
+$recaptchaResponse = trim($_POST['g-recaptcha-response'] ?? '');
+
+// Check reCAPTCHA response exists
+if (empty($recaptchaResponse)) {
+    setFlash('warning', 'Please complete the reCAPTCHA verification.');
+    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+}
+
+// Verify with Google API
+$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify?secret='
+           . urlencode($recaptchaSecret)
+           . '&response=' . urlencode($recaptchaResponse)
+           . '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'] ?? '');
+
+$recaptchaRaw    = file_get_contents($verifyUrl);
+$recaptchaResult = json_decode($recaptchaRaw, true);
+
+if (!isset($recaptchaResult['success']) || $recaptchaResult['success'] !== true) {
+    setFlash('warning', 'reCAPTCHA verification failed. Please try again.');
+    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+}
+// ── End reCAPTCHA Verification ────────────────────────────
 
 // Look up user in database
 try {
@@ -48,13 +73,14 @@ try {
     redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
 }
 
-// Verify password — same message whether email or password is wrong (security)
+// Verify password
+// Same message for wrong email or wrong password — security best practice
 if (!$user || !password_verify($password, $user['password_hash'])) {
     setFlash('danger', 'Incorrect email or password. Please try again.');
     redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
 }
 
-// Regenerate session ID to prevent session fixation
+// Regenerate session ID to prevent session fixation attack
 session_regenerate_id(true);
 
 // Set session variables
@@ -64,9 +90,19 @@ $_SESSION['role']     = $user['role'];
 
 // Handle Remember Me cookie (30 days)
 if (!empty($_POST['remember'])) {
-    $cookieValue  = base64_encode($user['user_id'] . ':' . hash('sha256', $user['password_hash']));
+    $cookieValue  = base64_encode(
+        $user['user_id'] . ':' . hash('sha256', $user['password_hash'])
+    );
     $cookieExpiry = time() + (30 * 24 * 60 * 60);
-    setcookie('remember_me', $cookieValue, $cookieExpiry, '/INF1005-WEB-SYS-PROJECT/', '', false, true);
+    setcookie(
+        'remember_me',
+        $cookieValue,
+        $cookieExpiry,
+        '/INF1005-WEB-SYS-PROJECT/',
+        '',
+        false,
+        true
+    );
 }
 
 // Flash welcome message
