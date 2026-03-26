@@ -1,0 +1,11 @@
+p{
+    padding-left: 18em;
+    padding-right: 18em;
+}
+
+@media (max-width: 768px){
+p{
+        padding-left: 12em;
+        padding-right: 12em;
+    }
+}

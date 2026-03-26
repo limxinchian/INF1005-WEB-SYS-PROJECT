@@ -37,9 +37,9 @@
     padding-right: 6em;
 }
 
-@media (min-width: 768px){
+@media (max-width: 768px){
     .member_review{
-        height: 25em;
+        height: 12em;
     }
 
     .about_us{
