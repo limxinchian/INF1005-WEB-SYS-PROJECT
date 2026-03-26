@@ -31,3 +31,19 @@
 .carousel-control-next{
     z-index: 100;
 }
+
+.about_us{
+    padding-left: 6em;
+    padding-right: 6em;
+}
+
+@media (min-width: 768px){
+    .member_review{
+        height: 25em;
+    }
+
+    .about_us{
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+}

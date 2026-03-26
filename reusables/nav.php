@@ -6,15 +6,26 @@
             </a>
         </div>
 
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 d-none d-lg-block">
             <form action="" method="get">
-                    <input type="text" name="search" placeholder="Butter Chicken Curry" class="form-control bg-white">
+                <input type="text" name="search" placeholder="Butter Chicken Curry" class="form-control bg-white">
             </form>
         </div>
 
-        <div class="d-flex gap-3">
-            <button class="btn btn-secondary w-nav_button"><span class="overpass-mono-light text-white fw-bold">Login</span></button>
-            <button class="btn btn-secondary w-nav_button"><span class="overpass-mono-light text-white fw-bold">Register</span></button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <div class="d-lg-none my-3">
+                <form action="" method="get">
+                    <input type="text" name="search" placeholder="Butter Chicken Curry" class="form-control bg-white">
+                </form>
+            </div>
+            <div class="d-flex gap-3 ms-lg-auto flex-row flex-lg-row justify-content-end">
+                <button class="btn btn-secondary w-nav_button"><span class="overpass-mono-light text-white fw-bold">Login</span></button>
+                <button class="btn btn-secondary w-nav_button"><span class="overpass-mono-light text-white fw-bold">Register</span></button>
+            </div>
         </div>
     </div>
 </nav>
