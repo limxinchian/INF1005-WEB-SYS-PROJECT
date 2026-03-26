@@ -4,33 +4,23 @@ session_start();
 require_once 'db.php';
 
 // 1. AUTHENTICATION CHECK 
-// For testing purposes, fallback to user_id = 1 if the session isn't built yet.
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 
 
 $success_msg = "";
 $error_msg = "";
 
 // 2. HANDLE DELETE REQUEST 
-// check if a POST request was made specifically for deleting a recipe.
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_recipe_id'])) {
     
-    // Validate that the ID is an integer
     $delete_id = filter_input(INPUT_POST, 'delete_recipe_id', FILTER_VALIDATE_INT);
     
     if ($delete_id) {
-       
-        $stmt_delete = $conn->prepare("DELETE FROM recipes WHERE recipe_id = ? AND user_id = ?");
-        
-        if ($stmt_delete) {
-            $stmt_delete->bind_param("ii", $delete_id, $user_id);
-            if ($stmt_delete->execute()) {
-                $success_msg = "Recipe deleted successfully.";
-            } else {
-                $error_msg = "Failed to delete recipe. Please try again.";
-            }
-            $stmt_delete->close();
+        // UPDATED TO PDO
+        $stmt_delete = $pdo->prepare("DELETE FROM recipes WHERE recipe_id = ? AND user_id = ?");
+        if ($stmt_delete->execute([$delete_id, $user_id])) {
+            $success_msg = "Recipe deleted successfully.";
         } else {
-            $error_msg = "Database error during deletion.";
+            $error_msg = "Failed to delete recipe. Please try again.";
         }
     } else {
         $error_msg = "Invalid Recipe ID.";
@@ -39,18 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_recipe_id'])) {
 
 // 3. FETCH THE USER'S RECIPES 
 $my_recipes = [];
-// Select all recipes belonging to this specific user, ordered by newest first
-$stmt_fetch = $conn->prepare("SELECT * FROM recipes WHERE user_id = ? ORDER BY recipe_id DESC");
+// UPDATED TO PDO
+$stmt_fetch = $pdo->prepare("SELECT * FROM recipes WHERE user_id = ? ORDER BY recipe_id DESC");
 
 if ($stmt_fetch) {
-    $stmt_fetch->bind_param("i", $user_id);
-    $stmt_fetch->execute();
-    $result = $stmt_fetch->get_result();
-    
-    while ($row = $result->fetch_assoc()) {
+    $stmt_fetch->execute([$user_id]);
+    while ($row = $stmt_fetch->fetch(PDO::FETCH_ASSOC)) {
         $my_recipes[] = $row;
     }
-    $stmt_fetch->close();
 } else {
     $error_msg = "Database error: Unable to load your recipes.";
 }

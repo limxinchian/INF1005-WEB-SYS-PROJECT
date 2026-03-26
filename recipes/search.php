@@ -18,37 +18,36 @@ $params = [];
 // could contain nuts without being explicitly tagged "Nut-Free".
 if (!empty($search_tag)) {
     if ($search_tag === 'Nut-Free') {
-        // EXCLUSION: Hide any recipe that contains an ingredient where is_nut = 1
-        // This joins recipe_ingredients → ingredients and checks the flag column
         $where_clauses[] = "r.recipe_id NOT IN (
             SELECT ri.recipe_id
             FROM recipe_ingredients ri
             INNER JOIN ingredients i ON i.ingredient_id = ri.ingredient_id
             WHERE i.is_nut = 1
         )";
-        // No param needed — the flag value is hardcoded in the query
-
     } elseif ($search_tag === 'Gluten-Free') {
-        // EXCLUSION: Hide any recipe that contains an ingredient where is_gluten = 1
         $where_clauses[] = "r.recipe_id NOT IN (
             SELECT ri.recipe_id
             FROM recipe_ingredients ri
             INNER JOIN ingredients i ON i.ingredient_id = ri.ingredient_id
             WHERE i.is_gluten = 1
         )";
-
     } elseif ($search_tag === 'Dairy-Free') {
-        // EXCLUSION: Hide any recipe that contains an ingredient where is_dairy = 1
         $where_clauses[] = "r.recipe_id NOT IN (
             SELECT ri.recipe_id
             FROM recipe_ingredients ri
             INNER JOIN ingredients i ON i.ingredient_id = ri.ingredient_id
             WHERE i.is_dairy = 1
         )";
-
+    } elseif ($search_tag === 'Paleo') {
+        // EXCLUSION: Hide any recipe containing an ingredient flagged as non-paleo (is_paleo = 1)
+        $where_clauses[] = "r.recipe_id NOT IN (
+            SELECT ri.recipe_id
+            FROM recipe_ingredients ri
+            INNER JOIN ingredients i ON i.ingredient_id = ri.ingredient_id
+            WHERE i.is_paleo = 1
+        )";
     } else {
-        // INCLUSION: For Vegan, Vegetarian, Halal, Keto, Paleo — positive preference tags
-        // Note: column names are tag_id and tag_name (matching your dietary_tags table schema)
+        // INCLUSION: For Vegan, Vegetarian, Halal, Keto
         $sql .= " INNER JOIN recipe_dietary_tags rdt ON r.recipe_id = rdt.recipe_id
                   INNER JOIN dietary_tags dt ON rdt.tag_id = dt.tag_id";
         $where_clauses[] = "dt.tag_name = ?";

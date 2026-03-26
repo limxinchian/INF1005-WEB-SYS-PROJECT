@@ -2,72 +2,55 @@
 session_start();
 require_once 'db.php';
 
-// 1. VALIDATE & SANITIZE THE INPUT (Topic 06 Standard)
-// We check if the 'id' exists in the URL and ensure it is a valid integer.
-// This prevents attackers from typing malicious strings into the URL (e.g., recipe-detail.php?id=1;DROP TABLE recipes;)
+// 1. VALIDATE & SANITIZE THE INPUT
 $recipe_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-// If the ID is missing or invalid, stop the script and show an error.
 if (!$recipe_id) {
     die("Invalid Recipe ID.");
 }
 
-// 2. FETCH MAIN RECIPE DATA (Topic 09 Standard)
-// We use a prepared statement to safely fetch the core recipe details.
-$stmt_recipe = $conn->prepare("SELECT * FROM recipes WHERE recipe_id = ? AND status = 'approved'");
-$stmt_recipe->bind_param("i", $recipe_id);
-$stmt_recipe->execute();
-$recipe_result = $stmt_recipe->get_result();
+// 2. FETCH MAIN RECIPE DATA (UPDATED TO PDO)
+$stmt_recipe = $pdo->prepare("SELECT * FROM recipes WHERE recipe_id = ? AND status = 'approved'");
+$stmt_recipe->execute([$recipe_id]);
+$recipe = $stmt_recipe->fetch(PDO::FETCH_ASSOC);
 
-if ($recipe_result->num_rows === 0) {
+if (!$recipe) {
     die("Recipe not found or not yet approved.");
 }
-$recipe = $recipe_result->fetch_assoc();
-$stmt_recipe->close();
 
-// 3. FETCH DIETARY TAGS (Relational Query)
+// 3. FETCH DIETARY TAGS (UPDATED TO PDO)
 $tags = [];
-$stmt_tags = $conn->prepare("
+$stmt_tags = $pdo->prepare("
     SELECT dt.name 
     FROM recipe_dietary_tags rdt
     INNER JOIN dietary_tags dt ON rdt.tag_id = dt.id
     WHERE rdt.recipe_id = ?
 ");
-$stmt_tags->bind_param("i", $recipe_id);
-$stmt_tags->execute();
-$tags_result = $stmt_tags->get_result();
-while ($row = $tags_result->fetch_assoc()) {
+$stmt_tags->execute([$recipe_id]);
+while ($row = $stmt_tags->fetch(PDO::FETCH_ASSOC)) {
     $tags[] = $row['name'];
 }
-$stmt_tags->close();
 
-// 4. FETCH INGREDIENTS (Relational Query)
+// 4. FETCH INGREDIENTS (UPDATED TO PDO)
 $ingredients = [];
-// Assuming your recipe_ingredients table has a quantity/unit column, and links to an ingredients table
-$stmt_ing = $conn->prepare("
+$stmt_ing = $pdo->prepare("
     SELECT i.name, ri.quantity, ri.unit 
     FROM recipe_ingredients ri
     INNER JOIN ingredients i ON ri.ingredient_id = i.id
     WHERE ri.recipe_id = ?
 ");
-$stmt_ing->bind_param("i", $recipe_id);
-$stmt_ing->execute();
-$ing_result = $stmt_ing->get_result();
-while ($row = $ing_result->fetch_assoc()) {
+$stmt_ing->execute([$recipe_id]);
+while ($row = $stmt_ing->fetch(PDO::FETCH_ASSOC)) {
     $ingredients[] = $row;
 }
-$stmt_ing->close();
 
-// 5. FETCH STEPS (Relational Query)
+// 5. FETCH STEPS (UPDATED TO PDO)
 $steps = [];
-$stmt_steps = $conn->prepare("SELECT step_number, instruction FROM recipe_steps WHERE recipe_id = ? ORDER BY step_number ASC");
-$stmt_steps->bind_param("i", $recipe_id);
-$stmt_steps->execute();
-$steps_result = $stmt_steps->get_result();
-while ($row = $steps_result->fetch_assoc()) {
+$stmt_steps = $pdo->prepare("SELECT step_number, instruction FROM recipe_steps WHERE recipe_id = ? ORDER BY step_number ASC");
+$stmt_steps->execute([$recipe_id]);
+while ($row = $stmt_steps->fetch(PDO::FETCH_ASSOC)) {
     $steps[] = $row;
 }
-$stmt_steps->close();
 ?>
 
 <!DOCTYPE html>
