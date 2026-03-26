@@ -19,3 +19,15 @@
 .home_recipe_info{
     height: 16em;
 }
+
+.member_review{
+    height: 15em;
+}
+
+.carousel-control-prev{
+    z-index: 100;
+}
+
+.carousel-control-next{
+    z-index: 100;
+}
