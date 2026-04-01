@@ -79,13 +79,17 @@
                     <div class="profile_image col-md-4">
                         <div class="container text-center p-2 mb-4">
                             <?php if (!empty($user['avatar_url'])): ?>
-                                <img src="<?= htmlspecialchars($user['avatar_url']) ?>"
+                                <img src="<?= htmlspecialchars(str_replace('=s96-c', '=s164-c', $user['avatar_url'])) ?>"
                                         alt="Avatar"
-                                        class="rounded-circle border border-success border-3 profile_avatar">
+                                        class="rounded-circle profile_avatar"
+                                        onerror="this.style.display='none';this.nextElementSibling.style.display='';">
+                                <div class="rounded-circle bg-success text-white d-inline-flex
+                                            align-items-center justify-content-center profile_avatar_placeholder" style="display:none;">
+                                    <span><?= strtoupper(substr($user['username'], 0, 1)) ?></span>
+                                </div>
                             <?php else: ?>
                                 <div class="rounded-circle bg-success text-white d-inline-flex
-                                            align-items-center justify-content-center border border-3
-                                            border-success profile_avatar_placeholder">
+                                            align-items-center justify-content-center profile_avatar_placeholder">
                                     <span><?= strtoupper(substr($user['username'], 0, 1)) ?></span>
                                 </div>
                             <?php endif; ?>
