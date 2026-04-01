@@ -9,6 +9,7 @@
         // ============================================================
         require_once 'config/session.php';
         require_once 'config/db.php';
+        require_once __DIR__ . "/vendor/autoload.php";
 
         // Read email back from GET parameter if redirected from failed login
         $previousEmail = htmlspecialchars($_GET['email'] ?? '');
@@ -139,6 +140,21 @@
         </form>
 
         <a href="register.php"><span class="text-primary overpass-mono-normal fs-small">I don't have an account</span></a>
+
+        <?php
+            $client = new Google\Client;
+
+            $client->setClientId($env['GOOGLE_CLIENT_ID']);
+            $client->setClientSecret($env['GOOGLE_CLIENT_SECRET']);
+            $client->setRedirectUri("http://localhost/INF1005-WEB-SYS-PROJECT/auth/google-callback.php");
+            $client->addScope("email");
+            $client->addScope("profile");
+
+            $authUrl = $client->createAuthUrl();
+        
+        ?>
+
+        <a href="<?= htmlspecialchars($authUrl) ?>">Sign in with Google</a>
     </div>
     <?php require_once 'reusables/footer.php'; ?>
 </body>
