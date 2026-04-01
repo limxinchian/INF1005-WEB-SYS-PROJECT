@@ -4,7 +4,7 @@ require_once '../db.php';
 
 // 1. VERIFY REQUEST METHOD
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../submit-recipe.php");
+    header("Location: ../recipes/submit-recipe.php");
     exit();
 }
 
@@ -30,7 +30,7 @@ if (empty($title) || empty($description) || !$prep_time_min) {
         'tags'          => $tags,
     ];
     $_SESSION['flash_error'] = "Please fill in all required fields.";
-    header("Location: ../submit-recipe.php");
+    header("Location: ../recipes/submit-recipe.php");
     exit();
 }
 
@@ -50,7 +50,7 @@ try {
     // Log error for admin debugging (optional but recommended)
     error_log("Recipe Insert Error: " . $e->getMessage());
     $_SESSION['flash_error'] = "Error submitting recipe. Please try again later.";
-    header("Location: ../submit-recipe.php");
+    header("Location: ../recipes/submit-recipe.php");
     exit();
 }
 
@@ -84,6 +84,6 @@ if (!empty($tags)) {
 
 // 6. SUCCESS
 $_SESSION['flash_success'] = "Recipe submitted successfully! It is now pending admin approval.";
-header("Location: ../submit-recipe.php");
+header("Location: ../recipes/submit-recipe.php");
 exit();
 ?>

@@ -75,7 +75,7 @@ if (isset($_SESSION['old_input'])) {
                         </div>
                     <?php endif; ?>
 
-                    <form action="actions/recipe-submit.php" method="POST">
+                    <form action="../actions/recipe-submit.php" method="POST">
 
                         <div class="mb-3">
                             <label for="title" class="form-label">Recipe Title <span class="text-danger">*</span></label>
