@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php require_once 'reusables/header.php'; ?>    
+    <?php
+        require_once __DIR__ . '/config/session.php';
+
+        if (isLoggedIn()) {
+            redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+        }
+        include_once 'reusables/header.php';
+    ?>    
     <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body class="bg-light">

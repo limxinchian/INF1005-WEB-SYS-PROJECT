@@ -42,7 +42,7 @@
     <?php require_once 'reusables/nav.php'; ?>
     <h1 class="text-center my-lg-5">Login to MealMate</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
-        <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0">
+        <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
             <!-- CSRF Token -->
             <input type="hidden"
                     name="csrf_token"
