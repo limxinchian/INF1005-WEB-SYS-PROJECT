@@ -86,35 +86,38 @@ if (isset($_SESSION['old_input'])) {
 
                         <div class="mb-3">
                             <label for="prep_time" class="form-label">Preparation Time (Minutes) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="prep_time" name="prep_time"
+                            <input type="number" class="form-control" id="prep_time" name="prep_time_min"
                                    required min="1" placeholder="e.g., 30"
-                                   value="<?php echo htmlspecialchars($old['prep_time'] ?? ''); ?>">
+                                   value="<?php echo htmlspecialchars($old['prep_time_min'] ?? ''); ?>">
                         </div>
 
                         <div class="mb-3">
-                            <label for="instructions" class="form-label">Step-by-Step Instructions <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="instructions" name="instructions"
+                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="description" name="description"
                                       rows="6" required
-                                      placeholder="1. Chop the vegetables..."><?php echo htmlspecialchars($old['instructions'] ?? ''); ?></textarea>
+                                      placeholder="1. Chop the vegetables..."><?php echo htmlspecialchars($old['description'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label d-block">Dietary Tags</label>
                             <?php
-                          
                             $old_tags    = $old['tags'] ?? [];
-                            $tag_options = ['Vegan', 'Halal', 'Nut-Free', 'Gluten-Free'];
-                            $tag_ids     = ['tag_vegan', 'tag_halal', 'tag_nutfree', 'tag_gf'];
-                            foreach ($tag_options as $i => $tag):
+                            $tag_options = ['Vegan', 'Vegetarian', 'Halal', 'Nut-Free', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo'];
+                            
+                            foreach ($tag_options as $tag):
+                                // Automatically generate a safe ID like "tag_glutenfree"
+                                $safe_id = 'tag_' . strtolower(str_replace([' ', '-'], ['', ''], $tag));
                                 $checked = in_array($tag, $old_tags) ? 'checked' : '';
                             ?>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
-                                           id="<?php echo $tag_ids[$i]; ?>"
+                                           id="<?php echo htmlspecialchars($safe_id); ?>"
                                            name="tags[]"
-                                           value="<?php echo $tag; ?>"
+                                           value="<?php echo htmlspecialchars($tag); ?>"
                                            <?php echo $checked; ?>>
-                                    <label class="form-check-label" for="<?php echo $tag_ids[$i]; ?>"><?php echo $tag; ?></label>
+                                    <label class="form-check-label" for="<?php echo htmlspecialchars($safe_id); ?>">
+                                        <?php echo htmlspecialchars($tag); ?>
+                                    </label>
                                 </div>
                             <?php endforeach; ?>
                         </div>

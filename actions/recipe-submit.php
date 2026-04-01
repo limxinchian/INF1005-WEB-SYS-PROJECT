@@ -10,22 +10,24 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 // 2. SANITIZE & VALIDATE INPUTS
 // Only trim — do NOT htmlspecialchars() before DB. Escape on OUTPUT instead.
-$title        = trim($_POST['title'] ?? '');
-$instructions = trim($_POST['instructions'] ?? '');
-$prep_time    = filter_input(INPUT_POST, 'prep_time', FILTER_VALIDATE_INT);
-$tags         = isset($_POST['tags']) && is_array($_POST['tags']) ? $_POST['tags'] : [];
+$title         = trim($_POST['title'] ?? '');
+$description   = trim($_POST['description'] ?? '');
+// Match the exact name="" attribute from the HTML form
+$prep_time_min = filter_input(INPUT_POST, 'prep_time_min', FILTER_VALIDATE_INT);
+$tags          = isset($_POST['tags']) && is_array($_POST['tags']) ? $_POST['tags'] : [];
 
-$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1;
-$status  = 'pending';
+// Align variable name with the V2 database column
+$submitted_by  = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1;
+$status        = 'pending';
 
 // 3. SERVER-SIDE VALIDATION
-if (empty($title) || empty($instructions) || !$prep_time) {
+if (empty($title) || empty($description) || !$prep_time_min) {
     // Save input to session so form fields can be re-populated (sticky form)
     $_SESSION['old_input'] = [
-        'title'        => $title,
-        'instructions' => $instructions,
-        'prep_time'    => $_POST['prep_time'] ?? '',
-        'tags'         => $tags,
+        'title'         => $title,
+        'description'   => $description,
+        'prep_time_min' => $_POST['prep_time_min'] ?? '',
+        'tags'          => $tags,
     ];
     $_SESSION['flash_error'] = "Please fill in all required fields.";
     header("Location: ../submit-recipe.php");
@@ -33,22 +35,20 @@ if (empty($title) || empty($instructions) || !$prep_time) {
 }
 
 // 4. INSERT MAIN RECIPE
-// PDO differences from MySQLi:
-//   - No bind_param() — pass values directly into execute() as an array
-//   - No $stmt->close() — just set $stmt = null or let it go out of scope
-//   - Use try/catch because PDO throws exceptions on failure (if PDO::ERRMODE_EXCEPTION is set)
 try {
-    $stmt = $pdo->prepare("INSERT INTO recipes (user_id, title, instructions, prep_time, status) 
+    // V2 update: Change prep_time to prep_time_min
+    $stmt = $pdo->prepare("INSERT INTO recipes (submitted_by, title, description, prep_time_min, status) 
                            VALUES (?, ?, ?, ?, ?)");
 
-    // Pass all values as an ordered array — no type hints needed like MySQLi's "issis"
-    $stmt->execute([$user_id, $title, $instructions, $prep_time, $status]);
+    // V2 update: Make sure to use the exact variables defined above
+    $stmt->execute([$submitted_by, $title, $description, $prep_time_min, $status]);
 
-    // PDO uses lastInsertId() on the connection object, not on the statement
     $new_recipe_id = $pdo->lastInsertId();
     $stmt = null; // Release the statement
 
 } catch (PDOException $e) {
+    // Log error for admin debugging (optional but recommended)
+    error_log("Recipe Insert Error: " . $e->getMessage());
     $_SESSION['flash_error'] = "Error submitting recipe. Please try again later.";
     header("Location: ../submit-recipe.php");
     exit();
@@ -56,10 +56,11 @@ try {
 
 // 5. LINK DIETARY TAGS (Relational Insert)
 if (!empty($tags)) {
-    $allowed_tags = ['Vegan', 'Halal', 'Nut-Free', 'Gluten-Free'];
+    // V2 update: Added the rest of your new dietary tags to the whitelist
+    $allowed_tags = ['Vegan', 'Vegetarian', 'Halal', 'Nut-Free', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo'];
 
-    // Prepare both statements once, then reuse them in the loop (efficient)
-    $stmt_get_tag  = $pdo->prepare("SELECT id FROM dietary_tags WHERE name = ?");
+    // V2 update: The columns are tag_id and tag_name (not id and name)
+    $stmt_get_tag  = $pdo->prepare("SELECT tag_id FROM dietary_tags WHERE tag_name = ?");
     $stmt_link_tag = $pdo->prepare("INSERT INTO recipe_dietary_tags (recipe_id, tag_id) VALUES (?, ?)");
 
     foreach ($tags as $tag_name) {
@@ -68,14 +69,12 @@ if (!empty($tags)) {
             continue;
         }
 
-        // PDO: pass value as array into execute()
         $stmt_get_tag->execute([$tag_name]);
-
-        // PDO: use fetch() with FETCH_ASSOC (or set as default in db_connect.php)
         $tag_row = $stmt_get_tag->fetch(PDO::FETCH_ASSOC);
 
         if ($tag_row) {
-            $stmt_link_tag->execute([$new_recipe_id, $tag_row['id']]);
+            // V2 update: Use the correct tag_id key
+            $stmt_link_tag->execute([$new_recipe_id, $tag_row['tag_id']]);
         }
     }
 

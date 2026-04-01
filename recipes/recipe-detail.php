@@ -9,8 +9,9 @@ if (!$recipe_id) {
     die("Invalid Recipe ID.");
 }
 
-// 2. FETCH MAIN RECIPE DATA (UPDATED TO PDO)
-$stmt_recipe = $pdo->prepare("SELECT * FROM recipes WHERE recipe_id = ? AND status = 'approved'");
+// 2. FETCH MAIN RECIPE DATA
+// V2 update: Added deleted_at IS NULL for soft deletes
+$stmt_recipe = $pdo->prepare("SELECT * FROM recipes WHERE recipe_id = ? AND status = 'approved' AND deleted_at IS NULL");
 $stmt_recipe->execute([$recipe_id]);
 $recipe = $stmt_recipe->fetch(PDO::FETCH_ASSOC);
 
@@ -18,35 +19,41 @@ if (!$recipe) {
     die("Recipe not found or not yet approved.");
 }
 
-// 3. FETCH DIETARY TAGS (UPDATED TO PDO)
+// 3. FETCH DIETARY TAGS
 $tags = [];
+// V2 update: Fixed column names to tag_name and tag_id
 $stmt_tags = $pdo->prepare("
-    SELECT dt.name 
+    SELECT dt.tag_name 
     FROM recipe_dietary_tags rdt
-    INNER JOIN dietary_tags dt ON rdt.tag_id = dt.id
+    INNER JOIN dietary_tags dt ON rdt.tag_id = dt.tag_id
     WHERE rdt.recipe_id = ?
 ");
 $stmt_tags->execute([$recipe_id]);
 while ($row = $stmt_tags->fetch(PDO::FETCH_ASSOC)) {
-    $tags[] = $row['name'];
+    $tags[] = $row['tag_name'];
 }
 
-// 4. FETCH INGREDIENTS (UPDATED TO PDO)
+// 4. FETCH INGREDIENTS & ALLERGENS
 $ingredients = [];
+// V2 update: Upgraded to use your V2 schema's advanced Allergen warning query!
 $stmt_ing = $pdo->prepare("
-    SELECT i.name, ri.quantity, ri.unit 
+    SELECT i.ingredient_name, ri.quantity, ri.notes,
+           GROUP_CONCAT(a.allergen_name SEPARATOR ', ') AS allergens
     FROM recipe_ingredients ri
-    INNER JOIN ingredients i ON ri.ingredient_id = i.id
+    JOIN ingredients i ON i.ingredient_id = ri.ingredient_id
+    LEFT JOIN ingredient_allergens ia ON ia.ingredient_id = i.ingredient_id
+    LEFT JOIN allergens a ON a.allergen_id = ia.allergen_id
     WHERE ri.recipe_id = ?
+    GROUP BY i.ingredient_id, ri.quantity, ri.notes
 ");
 $stmt_ing->execute([$recipe_id]);
 while ($row = $stmt_ing->fetch(PDO::FETCH_ASSOC)) {
     $ingredients[] = $row;
 }
 
-// 5. FETCH STEPS (UPDATED TO PDO)
+// 5. FETCH STEPS 
 $steps = [];
-$stmt_steps = $pdo->prepare("SELECT step_number, instruction FROM recipe_steps WHERE recipe_id = ? ORDER BY step_number ASC");
+$stmt_steps = $pdo->prepare("SELECT step_order, instruction FROM recipe_steps WHERE recipe_id = ? ORDER BY step_order ASC");
 $stmt_steps->execute([$recipe_id]);
 while ($row = $stmt_steps->fetch(PDO::FETCH_ASSOC)) {
     $steps[] = $row;
@@ -80,7 +87,7 @@ while ($row = $stmt_steps->fetch(PDO::FETCH_ASSOC)) {
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="display-4 fw-bold"><?php echo htmlspecialchars($recipe['title']); ?></h1>
-            <p class="text-muted fs-5">Preparation Time: <?php echo htmlspecialchars($recipe['prep_time']); ?> minutes</p>
+            <p class="text-muted fs-5">Preparation Time: <?php echo htmlspecialchars($recipe['prep_time_min']); ?> minutes</p>
             
             <div class="mb-3">
                 <?php foreach ($tags as $tag): ?>
@@ -101,9 +108,26 @@ while ($row = $stmt_steps->fetch(PDO::FETCH_ASSOC)) {
                         <?php else: ?>
                             <?php foreach ($ingredients as $ing): ?>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <?php echo htmlspecialchars($ing['name']); ?>
+                                    <div>
+                                        <?php echo htmlspecialchars($ing['ingredient_name']); ?>
+                                        
+                                        <?php if (!empty($ing['allergens'])): ?>
+                                            <div class="mt-1">
+                                                <span class="badge bg-danger bg-opacity-75 text-white" style="font-size: 0.7em;">
+                                                    ⚠️ Contains: <?php echo htmlspecialchars($ing['allergens']); ?>
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
                                     <span class="badge bg-secondary rounded-pill">
-                                        <?php echo htmlspecialchars($ing['quantity'] . ' ' . $ing['unit']); ?>
+                                        <?php 
+                                        $qty_str = $ing['quantity'];
+                                        if (!empty($ing['notes'])) {
+                                            $qty_str .= ' ' . $ing['notes'];
+                                        }
+                                        echo htmlspecialchars(trim($qty_str)); 
+                                        ?>
                                     </span>
                                 </li>
                             <?php endforeach; ?>
@@ -116,16 +140,16 @@ while ($row = $stmt_steps->fetch(PDO::FETCH_ASSOC)) {
         <div class="col-md-8">
             <div class="card shadow-sm border-0 bg-white">
                 <div class="card-body">
-                    <h3 class="card-title h4 mb-4 border-bottom pb-2">Instructions</h3>
+                    <h3 class="card-title h4 mb-4 border-bottom pb-2">Description / Instructions</h3>
                     
                     <?php if (empty($steps)): ?>
-                        <p style="white-space: pre-line;"><?php echo htmlspecialchars($recipe['instructions']); ?></p>
+                        <p style="white-space: pre-line;"><?php echo htmlspecialchars($recipe['description']); ?></p>
                     <?php else: ?>
                         <div class="list-group list-group-flush list-group-numbered">
                             <?php foreach ($steps as $step): ?>
                                 <li class="list-group-item border-0 mb-2 px-0 d-flex align-items-start">
                                     <div class="ms-2 me-auto">
-                                        <div class="fw-bold text-primary mb-1">Step <?php echo htmlspecialchars($step['step_number']); ?></div>
+                                        <div class="fw-bold text-primary mb-1">Step <?php echo htmlspecialchars($step['step_order']); ?></div>
                                         <?php echo htmlspecialchars($step['instruction']); ?>
                                     </div>
                                 </li>

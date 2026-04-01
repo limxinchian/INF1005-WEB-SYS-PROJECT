@@ -15,9 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_recipe_id'])) {
     $delete_id = filter_input(INPUT_POST, 'delete_recipe_id', FILTER_VALIDATE_INT);
     
     if ($delete_id) {
-        // UPDATED TO PDO
-        $stmt_delete = $pdo->prepare("DELETE FROM recipes WHERE recipe_id = ? AND user_id = ?");
-        if ($stmt_delete->execute([$delete_id, $user_id])) {
+        // V2 UPDATE: Implement Soft Deletes! 
+        // We update the deleted_at timestamp instead of permanently erasing the row.
+        // Also changed 'user_id' column to 'submitted_by'
+        $stmt_delete = $pdo->prepare("UPDATE recipes SET deleted_at = NOW(), deleted_by = ? WHERE recipe_id = ? AND submitted_by = ?");
+        
+        if ($stmt_delete->execute([$user_id, $delete_id, $user_id])) {
             $success_msg = "Recipe deleted successfully.";
         } else {
             $error_msg = "Failed to delete recipe. Please try again.";
@@ -29,8 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_recipe_id'])) {
 
 // 3. FETCH THE USER'S RECIPES 
 $my_recipes = [];
-// UPDATED TO PDO
-$stmt_fetch = $pdo->prepare("SELECT * FROM recipes WHERE user_id = ? ORDER BY recipe_id DESC");
+
+// V2 UPDATE: Changed 'user_id' to 'submitted_by'
+// V2 UPDATE: Added 'deleted_at IS NULL' so deleted recipes disappear from the dashboard
+$stmt_fetch = $pdo->prepare("SELECT * FROM recipes WHERE submitted_by = ? AND deleted_at IS NULL ORDER BY recipe_id DESC");
 
 if ($stmt_fetch) {
     $stmt_fetch->execute([$user_id]);
@@ -113,7 +118,7 @@ if ($stmt_fetch) {
                                         <?php echo htmlspecialchars($recipe['title']); ?>
                                     </td>
                                     <td>
-                                        <?php echo htmlspecialchars($recipe['prep_time']); ?> mins
+                                        <?php echo htmlspecialchars($recipe['prep_time_min']); ?> mins
                                     </td>
                                     <td>
                                         <?php if ($recipe['status'] === 'approved'): ?>
@@ -128,7 +133,7 @@ if ($stmt_fetch) {
                                         
                                         <a href="recipe-detail.php?id=<?php echo $recipe['recipe_id']; ?>" class="btn btn-sm btn-outline-primary me-2">View</a>
                                         
-                                        <form action="my-recipes.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to completely delete this recipe? This cannot be undone.');">
+                                        <form action="my-recipes.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
                                             <input type="hidden" name="delete_recipe_id" value="<?php echo $recipe['recipe_id']; ?>">
                                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                         </form>
