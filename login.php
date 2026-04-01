@@ -154,7 +154,13 @@
         
         ?>
 
-        <a href="<?= htmlspecialchars($authUrl) ?>">Sign in with Google</a>
+        <div class="d-flex align-items-center w-100">
+            <hr class="flex-grow-1">
+            <span class="px-3 overpass-mono-normal text-muted">or</span>
+            <hr class="flex-grow-1">
+        </div>
+
+        <a href="<?= htmlspecialchars($authUrl) ?>" class="btn btn-primary"><span class="overpass-mono-normal">Sign in with Google</span></a>
     </div>
     <?php require_once 'includes/footer.php'; ?>
 </body>
