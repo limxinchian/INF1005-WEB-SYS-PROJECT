@@ -21,7 +21,7 @@
 }
 
 .member_review{
-    height: 15em;
+    height: 100%;
 }
 
 .carousel-control-prev{
@@ -39,7 +39,7 @@
 
 @media (max-width: 768px){
     .member_review{
-        height: 12em;
+        height: 100%;
     }
 
     .about_us{

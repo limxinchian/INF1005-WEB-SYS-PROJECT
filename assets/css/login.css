@@ -1,0 +1,22 @@
+.g-recaptcha {
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+}
+
+@media (max-width: 768px) {
+  #loginForm input::-webkit-input-placeholder {
+    font-size: 12px;
+  }
+  #loginForm input::-moz-placeholder {
+    font-size: 12px;
+  }
+  #loginForm input:-ms-input-placeholder {
+    font-size: 12px;
+  }
+  .g-recaptcha {
+    -webkit-transform: scale(0.77);
+    -moz-transform: scale(0.77);
+    -ms-transform: scale(0.77);
+    transform: scale(0.77);
+  }
+}

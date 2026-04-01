@@ -1,62 +1,112 @@
-$primary: #FF9F1C;
-$secondary: #FFBF69;
-$light: #FFFFFF;
-$dark: #2EC4B6;
-$tertiary: #CBF3F0;
+$primary: #ff9f1c;
+$secondary: #ffbf69;
+$light: #ffffff;
+$dark: #2ec4b6;
+$tertiary: #cbf3f0;
 
 $body-bg: $light;
 
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
 $utilities: map-merge(
-    $utilities,
-    (
-        "width": map-merge(
-            map-get($utilities, "width"),
-            (
-                values: map-merge(
-                    map-get(map-get($utilities, "width"), "values"),
-                    (
-                        "nav_button": 110px,
-                        "hero": 5000px,
-                        "45": 45%,
-                        "65": 65%,
-                        "70": 70%,
-                    )
-                )
-            )
-        ),
-        "padding-x": map-merge(
-            map-get($utilities, "padding-x"),
-            (
-                values: map-merge(
-                    map-get(map-get($utilities, "padding-x"), "values"),
-                    (
-                        "6": $spacer * 6,
-                        "7": $spacer * 7,
-                        "8": $spacer * 8,
-                        "9": $spacer * 9,
-                        "10": $spacer * 10,
-                    )
-                )
-            )
-        ),
-        "padding-y": map-merge(
-            map-get($utilities, "padding-y"),
-            (
-                values: map-merge(
-                    map-get(map-get($utilities, "padding-y"), "values"),
-                    (
-                        "6": $spacer * 6,
-                        "7": $spacer * 7,
-                        "8": $spacer * 8,
-                        "9": $spacer * 9,
-                        "10": $spacer * 10,
-                    )
-                )
-            )
+  $utilities,
+  (
+    "width": map-merge(
+        map-get($utilities, "width"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "width"), "values"),
+              (
+                "nav_button": 110px,
+                "hero": 5000px,
+                "45": 45%,
+                "65": 65%,
+                "70": 70%,
+              )
+            ),
         )
-    )
+      ),
+    "margin-top": map-merge(
+        map-get($utilities, "margin-top"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "margin-top"), "values"),
+              (
+                "4-5": $spacer * 2,
+                "6": $spacer * 6,
+                "7": $spacer * 7,
+                "8": $spacer * 8,
+                "9": $spacer * 9,
+                "10": $spacer * 10,
+              )
+            ),
+        )
+      ),
+    "padding-x": map-merge(
+        map-get($utilities, "padding-x"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "padding-x"), "values"),
+              (
+                "6": $spacer * 6,
+                "7": $spacer * 7,
+                "8": $spacer * 8,
+                "9": $spacer * 9,
+                "10": $spacer * 10,
+              )
+            ),
+        )
+      ),
+    "padding-y": map-merge(
+        map-get($utilities, "padding-y"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "padding-y"), "values"),
+              (
+                "6": $spacer * 6,
+                "7": $spacer * 7,
+                "8": $spacer * 8,
+                "9": $spacer * 9,
+                "10": $spacer * 10,
+              )
+            ),
+        )
+      ),
+    "viewport-height": map-merge(
+        map-get($utilities, "viewport-height"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "viewport-height"), "values"),
+              (
+                "20": 20vh,
+                "25": 25vh,
+                "50": 50vh,
+                "60": 60vh,
+                "65": 65vh,
+                "70": 70vh,
+                "75": 75vh,
+              )
+            ),
+        )
+      ),
+    "min-viewport-height": map-merge(
+        map-get($utilities, "min-viewport-height"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "min-viewport-height"), "values"),
+              (
+                "20": 20vh,
+                "25": 25vh,
+                "50": 50vh,
+                "60": 60vh,
+                "65": 65vh,
+                "70": 70vh,
+                "75": 75vh,
+              )
+            ),
+        )
+      ),
+  )
 );
 
 @import "../../node_modules/bootstrap/scss/utilities/api";
