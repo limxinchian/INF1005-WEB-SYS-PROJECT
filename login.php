@@ -41,7 +41,7 @@
 <body>
     <?php require_once 'reusables/nav.php'; ?>
     <h1 class="text-center my-lg-5">Login to MealMate</h1>
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
         <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0">
             <!-- CSRF Token -->
             <input type="hidden"
@@ -114,7 +114,7 @@
             </div>
 
             <!-- Google reCAPTCHA -->
-            <div class="mb-lg-3">
+            <div class="mb-lg-3 mt-3">
                 <div
                     class="g-recaptcha"
                     data-sitekey="<?= htmlspecialchars($recaptchaSiteKey) ?>"
@@ -131,13 +131,14 @@
             <!-- Submit Button -->
             <div class="d-grid mt-lg-4-5 mt-sm-3">
                 <button type="submit"
-                        class="btn btn-success btn-lg overpass-mono-normal"
+                        class="btn btn-success btn-lg"
                         id="submitBtn">
-                    Sign In
+                    <span class="overpass-mono-normal">Sign In</span>
                 </button>
             </div>
-
         </form>
+
+        <a href="register.php"><span class="text-primary overpass-mono-normal fs-small">I don't have an account</span></a>
     </div>
     <?php require_once 'reusables/footer.php'; ?>
 </body>

@@ -1,5 +1,5 @@
-$primary: #ff9f1c;
-$secondary: #ffbf69;
+$primary: #ad6500;
+$secondary: #ad6500;
 $light: #ffffff;
 $dark: #2ec4b6;
 $tertiary: #cbf3f0;
@@ -102,6 +102,20 @@ $utilities: map-merge(
                 "65": 65vh,
                 "70": 70vh,
                 "75": 75vh,
+              )
+            ),
+        )
+      ),
+    "font-size": map-merge(
+        map-get($utilities, "font-size"),
+        (
+          values: map-merge(
+              map-get(map-get($utilities, "font-size"), "values"),
+              (
+                "tiny": 0.5rem,
+                "small": 0.75rem,
+                "medium": 1.25rem,
+                "large": 1.5rem,
               )
             ),
         )

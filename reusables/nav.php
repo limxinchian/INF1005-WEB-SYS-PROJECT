@@ -23,8 +23,8 @@
                 </form>
             </div>
             <div class="d-flex gap-3 ms-lg-auto flex-row flex-lg-row justify-content-end">
-                <button class="btn btn-secondary w-nav_button"><a href="login.php" class="overpass-mono-light text-white fw-bold">Login</a></button>
-                <button class="btn btn-secondary w-nav_button"><a href="register.php" class="overpass-mono-light text-white fw-bold">Register</a></button>
+                <a href="login.php" class="btn btn-secondary w-nav_button"><span class="text-white overpass-mono-normal">Login</span></a>
+                <a href="register.php" class="btn btn-secondary w-nav_button"><span class="text-white overpass-mono-normal">Register</span></a>
             </div>
         </div>
     </div>
