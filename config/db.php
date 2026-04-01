@@ -1,17 +1,18 @@
 <?php
-    $env = parse_ini_file('.env');
-    $host = $env["DB_HOST"];
-    $dbname = $env["DB_NAME"];
-    $user = $env["DB_USER"];
-    $password = $env["DB_PASS"];
 
-    try{
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
-    }catch(PDOException $e){
-        die("Database connection failed: " . $e->getMessage());
-    }
+$host = 'localhost';
+$dbname = 'mealmate_v2'; 
+$username = 'root'; 
+$password = ''; 
+try {
+    // Create the PDO connection
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    
+    // Set PDO to throw exceptions on errors (great for debugging)
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+} catch (PDOException $e) {
+    // If it fails, stop the page and print the error
+    die("Database connection failed: " . $e->getMessage());
+}
 ?>
