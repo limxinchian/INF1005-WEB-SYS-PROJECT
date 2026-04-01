@@ -1,66 +1,74 @@
-<?php
-// ============================================================
-//  profile.php
-//  PURPOSE : View and update user profile
-//  OWNER   : Member 1
-// ============================================================
-require_once 'config/session.php';
-require_once 'config/db.php';
-require_once 'includes/auth-guard.php';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <?php
+        // ============================================================
+        //  profile.php
+        //  PURPOSE : View and update user profile
+        //  OWNER   : Member 1
+        // ============================================================
+        require_once 'config/session.php';
+        require_once 'config/db.php';
+        require_once 'includes/auth-guard.php';
 
-// Fetch current user data from database
-$stmt = $pdo->prepare("
-    SELECT user_id, username, email, role, avatar_url, created_at
-    FROM users
-    WHERE user_id = ?
-");
-$stmt->execute([currentUserId()]);
-$user = $stmt->fetch();
+        // Fetch current user data from database
+        $stmt = $pdo->prepare("
+            SELECT user_id, username, email, role, avatar_url, created_at
+            FROM users
+            WHERE user_id = ?
+        ");
+        $stmt->execute([currentUserId()]);
+        $user = $stmt->fetch();
 
-// If user not found redirect to logout
-if (!$user) {
-    redirect('/INF1005-WEB-SYS-PROJECT/auth/logout.php');
-}
+        // If user not found redirect to logout
+        if (!$user) {
+            redirect('/INF1005-WEB-SYS-PROJECT/auth/logout.php');
+        }
 
-// Fetch user's current dietary preferences
-$prefStmt = $pdo->prepare("
-    SELECT tag_id FROM user_dietary_preferences
-    WHERE user_id = ?
-");
-$prefStmt->execute([currentUserId()]);
-$userTagIds = $prefStmt->fetchAll(\PDO::FETCH_COLUMN);
+        // Fetch user's current dietary preferences
+        $prefStmt = $pdo->prepare("
+            SELECT tag_id FROM user_dietary_preferences
+            WHERE user_id = ?
+        ");
+        $prefStmt->execute([currentUserId()]);
+        $userTagIds = $prefStmt->fetchAll(\PDO::FETCH_COLUMN);
 
-// Fetch all dietary tags
-$allTags = $pdo->query("
-    SELECT tag_id, tag_name FROM dietary_tags ORDER BY tag_name
-")->fetchAll();
+        // Fetch all dietary tags
+        $allTags = $pdo->query("
+            SELECT tag_id, tag_name FROM dietary_tags ORDER BY tag_name
+        ")->fetchAll();
 
-// Fetch user's recipe stats
-$statsStmt = $pdo->prepare("
-    SELECT
-        COUNT(*)                                    AS total_recipes,
-        SUM(status = 'approved')                   AS approved_recipes,
-        SUM(status = 'pending')                    AS pending_recipes
-    FROM recipes
-    WHERE submitted_by = ?
-");
-$statsStmt->execute([currentUserId()]);
-$stats = $statsStmt->fetch();
+        // Fetch user's recipe stats
+        $statsStmt = $pdo->prepare("
+            SELECT
+                COUNT(*)                                    AS total_recipes,
+                SUM(status = 'approved')                   AS approved_recipes,
+                SUM(status = 'pending')                    AS pending_recipes
+            FROM recipes
+            WHERE submitted_by = ?
+        ");
+        $statsStmt->execute([currentUserId()]);
+        $stats = $statsStmt->fetch();
 
-// Fetch favourite count
-$favStmt = $pdo->prepare("
-    SELECT COUNT(*) AS total_favourites
-    FROM favourite_recipes
-    WHERE user_id = ?
-");
-$favStmt->execute([currentUserId()]);
-$favCount = $favStmt->fetch()['total_favourites'];
+        // Fetch favourite count
+        $favStmt = $pdo->prepare("
+            SELECT COUNT(*) AS total_favourites
+            FROM favourite_recipes
+            WHERE user_id = ?
+        ");
+        $favStmt->execute([currentUserId()]);
+        $favCount = $favStmt->fetch()['total_favourites'];
 
-// Generate CSRF token
-$token = generateCsrfToken();
+        // Generate CSRF token
+        $token = generateCsrfToken();
 
-require_once 'includes/header.php';
-?>
+        require_once 'includes/header.php';
+        ?>
+</head>
+<body>
+    
+</body>
+</html>
 
 <div class="row justify-content-center">
     <div class="col-lg-10">

@@ -26,7 +26,7 @@
         $tags = $pdo->query("SELECT tag_id, tag_name FROM dietary_tags ORDER BY tag_name")->fetchAll();
 
         $title = 'MealMate - Register';
-        require_once 'reusables/header.php';
+        require_once 'includes/header.php';
     ?>
     <link rel="stylesheet" href="assets/css/register.css">
     
@@ -35,7 +35,7 @@
     <script src="assets/js/register.js" defer></script>
 </head>
 <body>
-    <?php require_once 'reusables/nav.php'; ?>
+    <?php require_once 'includes/nav.php'; ?>
     <h1 class="text-center my-lg-5">Register your Account</h1>
     <div class="container d-flex justify-content-center align-items-center">
         <form method="POST" action="auth/register-process.php" id="registerForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
@@ -167,6 +167,6 @@
             </div>
         </form>
     </div>
-    <?php require_once 'reusables/footer.php'; ?>
+    <?php require_once 'includes/footer.php'; ?>
 </body>
 </html>

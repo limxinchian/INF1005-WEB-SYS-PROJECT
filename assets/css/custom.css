@@ -11964,6 +11964,18 @@ textarea.form-control-lg {
   font-size: calc(1.275rem + 0.3vw) !important;
 }
 
+.fs-x-large {
+  font-size: calc(1.325rem + 0.9vw) !important;
+}
+
+.fs-xx-large {
+  font-size: calc(1.425rem + 2.1vw) !important;
+}
+
+.fs-xxx-large {
+  font-size: calc(1.525rem + 3.3vw) !important;
+}
+
 .fst-italic {
   font-style: italic !important;
 }
@@ -15113,6 +15125,15 @@ textarea.form-control-lg {
   }
   .fs-large {
     font-size: 1.5rem !important;
+  }
+  .fs-x-large {
+    font-size: 2rem !important;
+  }
+  .fs-xx-large {
+    font-size: 3rem !important;
+  }
+  .fs-xxx-large {
+    font-size: 4rem !important;
   }
 }
 @media print {

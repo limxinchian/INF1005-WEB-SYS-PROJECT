@@ -31,7 +31,7 @@
         $recaptchaSiteKey = $env['RECAPTCHA_SITE_KEY'] ?? '';
 
         $title = 'MealMate - Login';
-        require_once 'reusables/header.php';
+        require_once 'includes/header.php';
     ?>
     <link rel="stylesheet" href="assets/css/login.css">
     
@@ -40,7 +40,7 @@
     <script src="assets/js/login.js" defer></script>
 </head>
 <body>
-    <?php require_once 'reusables/nav.php'; ?>
+    <?php require_once 'includes/nav.php'; ?>
     <h1 class="text-center my-lg-5">Login to MealMate</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
         <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
@@ -156,6 +156,6 @@
 
         <a href="<?= htmlspecialchars($authUrl) ?>">Sign in with Google</a>
     </div>
-    <?php require_once 'reusables/footer.php'; ?>
+    <?php require_once 'includes/footer.php'; ?>
 </body>
 </html>

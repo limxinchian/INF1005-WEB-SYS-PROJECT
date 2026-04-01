@@ -12,7 +12,7 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <?php include 'reusables/nav.php'; ?>
+    <?php include 'includes/nav.php'; ?>
 
     <main class="mt-5 text-center ">
         <h2 class="mb-3">About Us</h2>
@@ -20,6 +20,6 @@
         <p>One recipe at a time.</p>
     </main>
 
-    <?php include 'reusables/footer.php'; ?>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>

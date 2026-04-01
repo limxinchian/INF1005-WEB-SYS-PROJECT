@@ -3,12 +3,12 @@
 <head>
     <?php
         $title = 'MealMate - Terms of Service';
-        include_once 'reusables/header.php';
+        include_once 'includes/header.php';
     ?>    
     <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body>
-    <?php include 'reusables/nav.php'; ?>
+    <?php include 'includes/nav.php'; ?>
 
     <main class="container mt-5 mb-5">
         <h2 class="text-center mb-4">Terms of Service</h2>
@@ -86,6 +86,6 @@
         </section>
     </main>
 
-    <?php include 'reusables/footer.php'; ?>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
