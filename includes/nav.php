@@ -39,7 +39,7 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="dashboard.php">View Dashboard</a></li>
                         <li><a class="dropdown-item" href="profile.php">View Profile</a></li>
-                        <li><a class="dropdown-item" href="profile.php">Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="edit_profile.php">Edit Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                     </ul>
