@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once '../config/db.php';
 
 // 1. VALIDATE & SANITIZE THE INPUT
 $recipe_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

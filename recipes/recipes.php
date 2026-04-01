@@ -1,7 +1,7 @@
 <?php
 session_start();    
 
-require_once __DIR__ . '/config/db.php'; // Fixed the path to avoid directory errors
+require_once '../config/db.php'; // Fixed the path to avoid directory errors
 
 $selected_tag = isset($_GET['tag']) ? htmlspecialchars(trim($_GET['tag'])) : '';
 

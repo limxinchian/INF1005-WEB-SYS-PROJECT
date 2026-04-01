@@ -1,7 +1,7 @@
 <?php
 // Start session to access the logged-in user's ID
 session_start();
-require_once 'db.php';
+require_once '../config/db.php';
 
 // 1. AUTHENTICATION CHECK 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 

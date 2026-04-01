@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php'; // Must expose $pdo
+require_once '../config/db.php'; // Must expose $pdo
 
 $search_keyword = isset($_GET['keyword']) ? htmlspecialchars(trim($_GET['keyword'])) : '';
 $search_tag = isset($_GET['tag']) ? htmlspecialchars(trim($_GET['tag'])) : '';
