@@ -155,7 +155,7 @@
                         id="terms" name="terms" required>
                 <label class="form-check-label overpass-mono-normal" for="terms">
                     I agree to the
-                    <a href="#" class="text-success">Terms &amp; Conditions</a>
+                    <a  target="_blank" rel="noopener noreferrer" href="tos.php" class="text-success">Terms of Service</a>
                 </label>
             </div>
 
