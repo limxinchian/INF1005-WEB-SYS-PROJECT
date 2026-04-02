@@ -178,7 +178,7 @@
                 <?php if (!empty($fridgePreview)): ?>
                     <div class="ingredient-list">
                         <?php foreach ($fridgePreview as $ingredient): ?>
-                            <span class="ingredient-tag"><?= e($ingredient) ?></span>
+                            <span class="card p-2 mb-2"><?= e($ingredient) ?></span>
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
