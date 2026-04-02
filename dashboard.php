@@ -138,7 +138,7 @@
 
         <h2>Quick Actions</h1>
         <div class="d-flex flex-column flex-lg-row gap-4 mb-4">
-            <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="my-recipes.php">Add Recipe</a>
+            <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="submit-recipe.php">Add Recipe</a>
             <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="meal-planner.php">Add Meal</a>
             <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="favourites.php">Add Favourites</a>
         </div>

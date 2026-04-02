@@ -1,6 +1,7 @@
 .images {
   width: 18em;
   height: 12em;
+  flex-shrink: 0;
   overflow: hidden;
 }
 
