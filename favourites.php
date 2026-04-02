@@ -88,6 +88,7 @@
 
         $title = "MealMate - My Favourites";
         require_once 'includes/header.php';
+        require_once 'helper/get-image-link.php';
     ?>
     <script src="assets/js/favourites.js" defer></script>
     <link rel="stylesheet" href="assets/css/favourites.css">
@@ -133,14 +134,9 @@
                 </div>
             <?php else: ?>
                 <?php foreach ($favourites as $recipe): ?>
-                    <?php
-                        $recipeImgName = str_replace([' ', '/', ':', '?', ','], '_', $recipe['title']);
-                        $recipeImgName = $recipe['recipe_id'] . '_' . $recipeImgName;
-                        $recipeImage = "https://storage.googleapis.com/mealmate_recipe_images/{$recipeImgName}";
-                    ?>
                     <div class="card m-3 p-3 d-flex flex-column flex-lg-row gap-4 align-items-center fav-card" data-title="<?= htmlspecialchars(strtolower($recipe['title'])) ?>">
                         <div class="images">
-                            <img class="rounded" src="<?= htmlspecialchars($recipeImage) ?>" alt="">
+                            <img class="rounded" src="<?= htmlspecialchars(getImageLink($recipe['title'], $recipe['recipe_id'])) ?>" alt="">
                         </div>
                         <div class="information">    
                             <h2 class="mb-md-0 ms-md-1"><?= htmlspecialchars($recipe['title']) ?></h2>

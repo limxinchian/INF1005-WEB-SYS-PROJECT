@@ -6,6 +6,7 @@
     <?php
         require_once 'config/session.php';
         require_once 'config/db.php';
+        require_once 'helper/get-image-link.php';
 
         if (!isset($_SESSION['user_id'])) {
             header('Location: login.php');
@@ -167,7 +168,7 @@
                     </div>
                 <?php endif; ?>
 
-                <a href="meal-planner.php" class="card-footer-link">Start planning! </a>
+                <a href="meal-planner.php" class="mt-auto btn btn-primary">Start planning! </a>
             </div></div>
 
             <!-- Fridge preview -->
@@ -186,7 +187,7 @@
                     </div>
                 <?php endif; ?>
 
-                <a href="fridge.php" class="card-footer-link">Update Fridge! </a>
+                <a href="fridge.php" class="mt-auto btn btn-primary">Update Fridge! </a>
             </div></div>
 
             <!-- Top matches -->
@@ -198,7 +199,7 @@
                         <?php foreach ($topMatches as $recipe): ?>
                             <div class="recipe-item">
                                 <img
-                                    src="<?= e(!empty($recipe['image_url']) ? $recipe['image_url'] : 'https://via.placeholder.com/90x90?text=Recipe') ?>"
+                                    src="<?= e(getImageLink($recipe['title'], $recipe['recipe_id'])) ?>"
                                     alt="<?= e($recipe['title']) ?>"
                                 >
                                 <div class="recipe-meta">
@@ -231,19 +232,29 @@
                 <?php if (!empty($recentFavs)): ?>
                     <div class="fav-list">
                         <?php foreach ($recentFavs as $fav): ?>
-                            <div class="fav-item">
+                            <div class="fav-item card p-2 mb-2">
                                 <img
-                                    src="<?= e(!empty($fav['image_url']) ? $fav['image_url'] : 'https://via.placeholder.com/90x90?text=Recipe') ?>"
+                                    src="<?= e(getImageLink($fav['title'], $fav['recipe_id'])) ?>"
                                     alt="<?= e($fav['title']) ?>"
                                 >
                                 <div class="fav-meta">
                                     <h4><?= e($fav['title']) ?></h4>
-                                    <p>
-                                        Prep: <?= e($fav['prep_time_min']) ?> min |
-                                        Cook: <?= e($fav['cook_time_min']) ?> min
-                                    </p>
-                                    <p>Calories: <?= e($fav['calories']) ?> kcal</p>
-                                    <p>Saved on: <?= e(date('d M Y', strtotime($fav['saved_at']))) ?></p>
+                                    
+                                <div class="nutrition mb-2 d-flex flex-column flex-sm-row gap-1 gap-md-3 ms-0">
+                                    <div>
+                                        <img src="assets/images/icons/prep_time.svg" alt="prep_time"><span class="fs-small">Prep Time</span>
+                                        <span><?= htmlspecialchars($fav['prep_time_min']) ?> mins</span>
+                                    </div>
+                                    <div>
+                                        <img src="assets/images/icons/cook_time.svg" alt="cook_time"><span class="fs-small">Cook Time</span>
+                                        <span><?= htmlspecialchars($fav['cook_time_min']) ?> mins</span>
+                                    </div>
+                                    <div>
+                                        <img src="assets/images/icons/calories.svg" alt="calories"><span class="fs-small">Calories</span>
+                                        <span><?= htmlspecialchars($fav['calories']) ?> kcal</span>
+                                    </div>
+                                </div>
+                                <p class="mb-0">Saved on: <?= e(date('d M Y', strtotime($fav['saved_at']))) ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -254,7 +265,7 @@
                     </div>
                 <?php endif; ?>
 
-                <a href="favourites.php" class="card-footer-link">Discover recipes </a>
+                <a href="favourites.php" class="mt-auto btn btn-primary">Discover recipes </a>
             </div></div>
         </div>
     </div>
