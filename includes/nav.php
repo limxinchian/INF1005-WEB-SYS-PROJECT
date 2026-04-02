@@ -10,8 +10,8 @@
         </div>
 
         <div class="flex-grow-1 d-none d-lg-block">
-            <form action="" method="get">
-                <input type="text" name="search" placeholder="Butter Chicken Curry" class="form-control bg-white">
+            <form action="search.php" method="get">
+                <input type="text" name="keyword" placeholder="Butter Chicken Curry" class="form-control bg-white">
             </form>
         </div>
 
@@ -21,8 +21,8 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <div class="d-lg-none my-3">
-                <form action="" method="get">
-                    <input type="text" name="search" placeholder="Butter Chicken Curry" class="form-control bg-white">
+                <form action="search.php" method="get">
+                    <input type="text" name="keyword" placeholder="Butter Chicken Curry" class="form-control bg-white">
                 </form>
             </div>
             <?php if (!isLoggedIn()){ ?>
