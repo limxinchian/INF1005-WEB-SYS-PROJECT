@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-use Google\Cloud\Storage\StorageClient;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
@@ -14,14 +12,12 @@ if (!isLoggedIn()) {
 
 verifyCsrfToken();
 
-
 $userId = currentUserId();
 $action = $_POST['action'] ?? '';
 
 if ($action === 'update_info') {
     $username  = trim($_POST['username'] ?? '');
     $email     = trim($_POST['email'] ?? '');
-    $avatarUrl = trim($_POST['avatar_url'] ?? '');
 
     if ($username === '' || $email === '') {
         setFlash('danger', 'Username and email are required.');
@@ -69,7 +65,7 @@ if ($action === 'update_info') {
         }
 
         if ($file['size'] > $maxSize) {
-            setFlash('danger', 'Avatar file must be under 2 MB.');
+            setFlash('danger', 'Avatar file must be under 10 MB.');
             redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
         }
 
@@ -94,43 +90,12 @@ if ($action === 'update_info') {
             redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
         }
 
-        // Delete old uploaded avatar if it exists
-        $oldStmt = $pdo->prepare("SELECT avatar_url FROM users WHERE user_id = ?");
-        $oldStmt->execute([$userId]);
-        $oldAvatar = $oldStmt->fetchColumn();
-        if ($oldAvatar && str_contains($oldAvatar, '/assets/images/uploads/avatars/')) {
-            $oldFile = __DIR__ . '/../' . ltrim(str_replace('/INF1005-WEB-SYS-PROJECT/', '', $oldAvatar), '/');
-            if (is_file($oldFile)) {
-                unlink($oldFile);
-            }
-        }
-
         $avatarUrl = '/INF1005-WEB-SYS-PROJECT/assets/images/uploads/avatars/' . $newName;
-
-        $storage = new StorageClient();
-        if (!$file = fopen(__DIR__ . "/../assets/images/uploads/avatars/" . $newName, 'r')) {
-            throw new \InvalidArgumentException('Unable to open file for reading');
-        }
-        $bucket = $storage->bucket("mealmate_profile_pictures");
-        $object = $bucket->upload($file, [
-        'name' => 'avatar_' . $userId
-        ]);
     }else{
-        // No new file uploaded
-        if (!isset($_POST['avatar_url'])) {
-        // No URL provided either — check if one exists in DB
-            $existingStmt = $pdo->prepare("SELECT avatar_url FROM users WHERE user_id = ?");
-            $existingStmt->execute([$userId]);
-            $existingAvatar = $existingStmt->fetchColumn();
-
-            if ($existingAvatar) {
-                // Keep the existing avatar
-                $avatarUrl = $existingAvatar;
-            } else {
-                // No avatar anywhere — ensure it's removed
-                $avatarUrl = '';
-            }
-        }
+        // If no new avatar uploaded, keep existing URL
+        $stmt = $pdo->prepare("SELECT avatar_url FROM users WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $avatarUrl = $stmt->fetchColumn();
     }
 
     // Update database

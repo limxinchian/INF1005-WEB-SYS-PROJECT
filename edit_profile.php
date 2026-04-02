@@ -199,28 +199,6 @@
                                                 >
                                             </div>
 
-                                            <!-- Avatar URL -->
-                                            <div class="mb-3">
-                                                <label for="avatar_url"
-                                                    class="form-label fw-semibold">
-                                                    Avatar URL
-                                                    <span class="text-muted fw-normal">
-                                                        (optional — paste an image link)
-                                                    </span>
-                                                </label>
-                                                <input
-                                                    type="url"
-                                                    class="form-control"
-                                                    id="avatar_url"
-                                                    name="avatar_url"
-                                                    placeholder="https://example.com/photo.jpg"
-                                                    value="<?= htmlspecialchars($user['avatar_url'] ?? '') ?>"
-                                                >
-                                                <div class="form-text">
-                                                    An uploaded file takes priority over the URL.
-                                                </div>
-                                            </div>
-
                                             <div class="d-grid">
                                                 <button type="submit"
                                                         class="btn btn-success">
