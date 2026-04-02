@@ -99,7 +99,9 @@
         $title = "MealMate - Meal Planner";
         include_once 'includes/header.php';
     ?>
+    <link rel="stylesheet" href="assets/css/meal_planner.css">
     <script>
+        // do not remove, this is to make sure the dropdown works!!!
         const allRecipes = <?= json_encode(array_map(fn($r) => [
             'id' => (int)$r['recipe_id'],
             'title' => $r['title'],
@@ -107,47 +109,6 @@
         ], $recipes), JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     </script>
     <script src="assets/js/meal_planner.js" defer></script>
-    <style>
-        .autocomplete-wrapper {
-            position: relative;
-            flex-grow: 1;
-        }
-        .autocomplete-wrapper input {
-            width: 100%;
-        }
-        .autocomplete-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-            margin-top: 4px;
-        }
-        .autocomplete-dropdown .ac-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .autocomplete-dropdown .ac-item:hover,
-        .autocomplete-dropdown .ac-item.ac-active {
-            background: #f0f0f0;
-        }
-        .autocomplete-dropdown .ac-item .ac-tags {
-            font-size: 12px;
-            color: grey;
-        }
-        .autocomplete-dropdown .ac-no-results {
-            padding: 8px 12px;
-            font-size: 14px;
-            color: grey;
-        }
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
