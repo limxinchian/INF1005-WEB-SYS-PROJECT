@@ -1,80 +1,40 @@
-<?php
-require_once __DIR__ . '/../../config/db.php';
-require_once __DIR__ . '/../../includes/admin-guard.php';
-
-try {
-    $stmt = $pdo->query("
-        SELECT
-            user_id,
-            username,
-            email,
-            role,
-            avatar_url,
-            created_at,
-            updated_at
-        FROM users
-        WHERE deleted_at IS NULL
-        ORDER BY created_at DESC
-    ");
-
-    $users = $stmt->fetchAll();
-} catch (Throwable $e) {
-    die('Failed to load users: ' . $e->getMessage());
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Users</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
+    <?php
+        require_once __DIR__ . '/../../config/db.php';
+        require_once __DIR__ . '/../../includes/admin-guard.php';
+
+        try {
+            $stmt = $pdo->query("
+                SELECT
+                    user_id,
+                    username,
+                    email,
+                    role,
+                    avatar_url,
+                    created_at,
+                    updated_at
+                FROM users
+                WHERE deleted_at IS NULL
+                ORDER BY created_at DESC
+            ");
+
+            $users = $stmt->fetchAll();
+        } catch (Throwable $e) {
+            die('Failed to load users: ' . $e->getMessage());
         }
 
-        table {
-            border-collapse: collapse;
-            margin-top: 16px;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        .top-links {
-            margin-bottom: 16px;
-        }
-
-        .top-links a {
-            margin-right: 12px;
-        }
-
-        .message {
-            color: green;
-            font-weight: bold;
-            margin: 12px 0;
-        }
-
-        .actions form {
-            display: inline-block;
-            margin: 0;
-        }
-    </style>
+        $title = "MealMate - All Users";
+        include_once '../../includes/header.php';
+    ?>
 </head>
 
 <body>
-    <a href="../dashboard.php">Back to Dashboard</a>
-    <a href="users-trash.php"> View Deleted Users</a>
+    <?php include_once '../../includes/admin_nav.php'; ?>
 
-    <h1>All Users</h1>
+
+    <h1 class="mt-3">All Users</h1>
 
     <?php if (isset($_GET['message'])): ?>
         <p class="message"><?= htmlspecialchars($_GET['message']) ?></p>
@@ -83,35 +43,35 @@ try {
     <?php if (empty($users)): ?>
         <p>No users found.</p>
     <?php else: ?>
-        <table>
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>User ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Avatar URL</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>Actions</th>
+                    <th scope="col" class="fw-bold text-nowrap">User ID</th>
+                    <th scope="col" class="fw-bold text-nowrap">Username</th>
+                    <th scope="col" class="fw-bold text-nowrap">Email</th>
+                    <th scope="col" class="fw-bold text-nowrap">Role</th>
+                    <th scope="col" class="fw-bold text-nowrap">Avatar URL</th>
+                    <th scope="col" class="fw-bold text-nowrap">Created At</th>
+                    <th scope="col" class="fw-bold text-nowrap">Updated At</th>
+                    <th scope="col" class="fw-bold text-nowrap">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['user_id']) ?></td>
-                        <td><?= htmlspecialchars($user['username']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
-                        <td><?= htmlspecialchars($user['role']) ?></td>
-                        <td><?= htmlspecialchars($user['avatar_url'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($user['created_at']) ?></td>
-                        <td><?= htmlspecialchars($user['updated_at']) ?></td>
+                        <td class="fw-bold text-nowrap"><?= htmlspecialchars($user['user_id']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['username']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['email']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['role']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['avatar_url'] ?? '') ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['created_at']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($user['updated_at']) ?></td>
                         <td class="actions">
-                            <a href="user-edit.php?user_id=<?= urlencode($user['user_id']) ?>">Edit</a>
+                            <a href="user-edit.php?user_id=<?= urlencode($user['user_id']) ?>" class="btn btn-warning w-100">Edit</a>
 
-                            <form action="../../actions/users/user-delete.php" method="POST" onsubmit="return confirm('Are you sure you want to move this user to trash?');">
+                            <form class="mt-1" action="../../actions/users/user-delete.php" method="POST" onsubmit="return confirm('Are you sure you want to move this user to trash?');">
                                 <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
-                                <button type="submit">Delete</button>
+                                <button type="submit" class="btn btn-danger w-100">Delete</button>
                             </form>
                         </td>
                     </tr>
