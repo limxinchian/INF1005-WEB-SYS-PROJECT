@@ -105,8 +105,11 @@
                 <p class="mt-1">Current Recipes in Favourites: <span class="count-badge"><?= $filteredCount ?></span></p>
             </div>
         </div>
-        <h2>All Recipes</h2>
-        select
+        
+        <div class="d-flex flex-row justify-content-between align-items-center mb-3">
+            <h2>All Recipes</h2>
+            <a href="search.php" class="btn btn-primary fs-lg-5">Add more favourites</a>
+        </div>
         <div class="card mt-1">
             <div class="d-flex flex-column flex-lg-row gap-2 mb-2 px-3 pt-3 align-items-center justify-content-between">
                 <div>
