@@ -11160,6 +11160,14 @@ textarea.form-control-lg {
   width: 70% !important;
 }
 
+.w-80 {
+  width: 80% !important;
+}
+
+.w-90 {
+  width: 90% !important;
+}
+
 .mw-100 {
   max-width: 100% !important;
 }

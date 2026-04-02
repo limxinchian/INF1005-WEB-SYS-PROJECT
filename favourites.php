@@ -108,7 +108,7 @@
         <h2>All Recipes</h2>
         select
         <div class="card mt-1">
-            <div class="d-flex flex-column flex-lg-row gap-4 mb-2 px-3 pt-3 align-items-center justify-content-between">
+            <div class="d-flex flex-column flex-lg-row gap-2 mb-2 px-3 pt-3 align-items-center justify-content-between">
                 <div>
                     <p>Showing: <?= $filteredCount ?> of <?= $totalCount ?> favourite recipe<?= $totalCount === 1 ? '' : 's' ?>.</p>
                 </div>
@@ -140,9 +140,9 @@
                             <img class="rounded" src="<?= htmlspecialchars($recipeImage) ?>" alt="">
                         </div>
                         <div class="information">    
-                            <h2 class="mb-0 ms-1"><?= htmlspecialchars($recipe['title']) ?></h2>
-                            <p class="mb-0 ms-1">By <?= htmlspecialchars($recipe['author']) ?></p>
-                            <div class="nutrition mb-1 d-flex flex-column flex-sm-row gap-3 ms-0">
+                            <h2 class="mb-md-0 ms-md-1"><?= htmlspecialchars($recipe['title']) ?></h2>
+                            <p class="mb-md-0 ms-md-1">By <?= htmlspecialchars($recipe['author']) ?></p>
+                            <div class="nutrition mb-1 d-flex flex-column flex-sm-row gap-1 gap-md-3 ms-0">
                                 <div>
                                     <img src="assets/images/icons/calories.svg" alt="calories"><span class="fs-small">Calories</span>
                                     <span><?= htmlspecialchars($recipe['calories']) ?> kcal</span>
@@ -160,7 +160,7 @@
                                     <span><?= htmlspecialchars($recipe['fat_g']) ?> g</span>
                                 </div>
                             </div>
-                            <div class="nutrition mb-2 d-flex flex-column flex-sm-row gap-3 ms-0">
+                            <div class="nutrition mb-2 d-flex flex-column flex-sm-row gap-1 gap-md-3 ms-0">
                                 <div>
                                     <img src="assets/images/icons/prep_time.svg" alt="prep_time"><span class="fs-small">Prep Time</span>
                                     <span><?= htmlspecialchars($recipe['prep_time_min']) ?> mins</span>
@@ -174,7 +174,7 @@
                                     <span><?= htmlspecialchars($recipe['servings']) ?></span>
                                 </div>
                             </div>
-                            <div class="description w-75 ms-1">
+                            <div class="description w-md-75 w-90 ms-1">
                                 <p><?= htmlspecialchars($recipe['description']) ?></p>
                             </div>
                         </div>
