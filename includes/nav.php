@@ -37,11 +37,15 @@
                         Welcome, <?php echo htmlspecialchars(currentUsername()); ?>!
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="dashboard.php">View Dashboard</a></li>
-                        <li><a class="dropdown-item" href="profile.php">View Profile</a></li>
-                        <li><a class="dropdown-item" href="edit_profile.php">Edit Profile</a></li>
+                        <li><a class="text-end dropdown-item" href="dashboard.php">View Dashboard</a></li>
+                        <li><a class="text-end dropdown-item" href="meal-planner.php">Meal Planner</a></li>
+                        <li><a class="text-end dropdown-item" href="fridge.php">Fridge</a></li>
+                        <li><a class="text-end dropdown-item" href="favourites.php">Favourites</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                        <li><a class="text-end dropdown-item" href="profile.php">View Profile</a></li>
+                        <li><a class="text-end dropdown-item" href="edit_profile.php">Edit Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="text-end dropdown-item" href="logout.php">Logout</a></li>
                     </ul>
                 </div>
             </div>

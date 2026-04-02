@@ -112,6 +112,7 @@ $utilities: map-merge(
           values: map-merge(
               map-get(map-get($utilities, "font-size"), "values"),
               (
+                "mini": 0.1rem,
                 "tiny": 0.5rem,
                 "small": 0.75rem,
                 "medium": 1.25rem,

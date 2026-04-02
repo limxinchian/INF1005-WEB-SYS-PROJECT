@@ -1,104 +1,155 @@
-<?php
-/**
- * meal-planner.php
- * ---------------------------------------------------------------
- * Weekly meal planner grid.
- * - Rows    = days of the week (Mon–Sun)
- * - Columns = meal slots (Breakfast, Lunch, Dinner)
- *
- * Features:
- *  • Create a new named plan with date range
- *  • Load any existing plan owned by the user
- *  • Each cell has a searchable recipe picker (modal)
- *  • Shows recipe title in cell once chosen
- *  • One-click clear per cell
- *  • Save submits to actions/meal-plan-save.php
- *  • Delete existing meal plan
- * ---------------------------------------------------------------
- */
-
-require_once 'config/session.php';
-require_once 'config/db.php';
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
-$userId   = (int) $_SESSION['user_id'];
-$username = $_SESSION['username'] ?? 'User';
-$initials = strtoupper(substr($username, 0, 2));
-
-// Flash messages
-$savedMsg = match($_GET['status'] ?? '') {
-    'saved'   => ['type' => 'success', 'text' => 'Meal plan saved successfully!'],
-    'created' => ['type' => 'success', 'text' => 'New meal plan created!'],
-    'deleted' => ['type' => 'success', 'text' => 'Meal plan deleted successfully!'],
-    'error'   => ['type' => 'error',   'text' => 'Something went wrong. Please try again.'],
-    default   => null,
-};
-
-// Load this user's existing plans
-$plansStmt = $pdo->prepare(
-    "SELECT plan_id, plan_name, start_date, end_date,
-            (SELECT COUNT(*) FROM meal_plan_entries WHERE plan_id = mp.plan_id) AS entry_count
-     FROM meal_plans mp
-     WHERE user_id = ?
-     ORDER BY created_at DESC"
-);
-$plansStmt->execute([$userId]);
-$allPlans = $plansStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Determine active plan
-$activePlanId = (int) ($_GET['plan'] ?? ($allPlans[0]['plan_id'] ?? 0));
-$activePlan   = null;
-foreach ($allPlans as $p) {
-    if ((int)$p['plan_id'] === $activePlanId) {
-        $activePlan = $p;
-        break;
-    }
-}
-
-// Load entries for the active plan
-$planEntries = [];
-if ($activePlan) {
-    $entriesStmt = $pdo->prepare(
-        "SELECT mpe.day_of_week, mpe.meal_slot, mpe.recipe_id,
-                r.title, r.prep_time_min, r.cook_time_min
-         FROM meal_plan_entries mpe
-         JOIN recipes r ON r.recipe_id = mpe.recipe_id
-         WHERE mpe.plan_id = ?"
-    );
-    $entriesStmt->execute([$activePlanId]);
-
-    foreach ($entriesStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $planEntries[$row['day_of_week']][$row['meal_slot']] = $row;
-    }
-}
-
-// All approved recipes for the picker
-$recipes = $pdo->query(
-    "SELECT r.recipe_id, r.title,
-            r.prep_time_min, r.cook_time_min, r.servings,
-            GROUP_CONCAT(DISTINCT dt.tag_name ORDER BY dt.tag_name SEPARATOR ', ') AS tags
-     FROM recipes r
-     LEFT JOIN recipe_dietary_tags rdt ON rdt.recipe_id = r.recipe_id
-     LEFT JOIN dietary_tags dt         ON dt.tag_id     = rdt.tag_id
-     WHERE r.status = 'approved'
-     GROUP BY r.recipe_id
-     ORDER BY r.title ASC"
-)->fetchAll(PDO::FETCH_ASSOC);
-
-$days  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-$slots = ['Breakfast','Lunch','Dinner'];
-$currentPage = basename($_SERVER['PHP_SELF']);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MealMate - Meal Planner</title>
+    <?php
+        /**
+         * meal-planner.php
+         * ---------------------------------------------------------------
+         * Weekly meal planner grid.
+         * - Rows    = days of the week (Mon–Sun)
+         * - Columns = meal slots (Breakfast, Lunch, Dinner)
+         *
+         * Features:
+         *  • Create a new named plan with date range
+         *  • Load any existing plan owned by the user
+         *  • Each cell has a searchable recipe picker (modal)
+         *  • Shows recipe title in cell once chosen
+         *  • One-click clear per cell
+         *  • Save submits to actions/meal-plan-save.php
+         *  • Delete existing meal plan
+         * ---------------------------------------------------------------
+         */
+
+        require_once 'config/session.php';
+        require_once 'config/db.php';
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: login.php');
+            exit;
+        }
+
+        $userId   = (int) $_SESSION['user_id'];
+        $username = $_SESSION['username'] ?? 'User';
+        $initials = strtoupper(substr($username, 0, 2));
+
+        // Flash messages
+        $savedMsg = match($_GET['status'] ?? '') {
+            'saved'   => ['type' => 'success', 'text' => 'Meal plan saved successfully!'],
+            'created' => ['type' => 'success', 'text' => 'New meal plan created!'],
+            'deleted' => ['type' => 'success', 'text' => 'Meal plan deleted successfully!'],
+            'error'   => ['type' => 'error',   'text' => 'Something went wrong. Please try again.'],
+            default   => null,
+        };
+
+        // Load this user's existing plans
+        $plansStmt = $pdo->prepare(
+            "SELECT plan_id, plan_name, start_date, end_date,
+                    (SELECT COUNT(*) FROM meal_plan_entries WHERE plan_id = mp.plan_id) AS entry_count
+            FROM meal_plans mp
+            WHERE user_id = ?
+            ORDER BY created_at DESC"
+        );
+        $plansStmt->execute([$userId]);
+        $allPlans = $plansStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Determine active plan
+        $activePlanId = (int) ($_GET['plan'] ?? ($allPlans[0]['plan_id'] ?? 0));
+        $activePlan   = null;
+        foreach ($allPlans as $p) {
+            if ((int)$p['plan_id'] === $activePlanId) {
+                $activePlan = $p;
+                break;
+            }
+        }
+
+        // Load entries for the active plan
+        $planEntries = [];
+        if ($activePlan) {
+            $entriesStmt = $pdo->prepare(
+                "SELECT mpe.day_of_week, mpe.meal_slot, mpe.recipe_id,
+                        r.title, r.prep_time_min, r.cook_time_min
+                FROM meal_plan_entries mpe
+                JOIN recipes r ON r.recipe_id = mpe.recipe_id
+                WHERE mpe.plan_id = ?"
+            );
+            $entriesStmt->execute([$activePlanId]);
+
+            foreach ($entriesStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $planEntries[$row['day_of_week']][$row['meal_slot']] = $row;
+            }
+        }
+
+        // All approved recipes for the picker
+        $recipes = $pdo->query(
+            "SELECT r.recipe_id, r.title,
+                    r.prep_time_min, r.cook_time_min, r.servings,
+                    GROUP_CONCAT(DISTINCT dt.tag_name ORDER BY dt.tag_name SEPARATOR ', ') AS tags
+            FROM recipes r
+            LEFT JOIN recipe_dietary_tags rdt ON rdt.recipe_id = r.recipe_id
+            LEFT JOIN dietary_tags dt         ON dt.tag_id     = rdt.tag_id
+            WHERE r.status = 'approved'
+            GROUP BY r.recipe_id
+            ORDER BY r.title ASC"
+        )->fetchAll(PDO::FETCH_ASSOC);
+
+        $days  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        $slots = ['Breakfast','Lunch','Dinner'];
+        $currentPage = basename($_SERVER['PHP_SELF']);
+
+        $title = "MealMate - Meal Planner";
+        include_once 'includes/header.php';
+    ?>
+    <script>
+        const allRecipes = <?= json_encode(array_map(fn($r) => [
+            'id' => (int)$r['recipe_id'],
+            'title' => $r['title'],
+            'tags' => $r['tags'] ?? ''
+        ], $recipes), JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+    </script>
+    <script src="assets/js/meal_planner.js" defer></script>
+    <style>
+        .autocomplete-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+        .autocomplete-wrapper input {
+            width: 100%;
+        }
+        .autocomplete-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            margin-top: 4px;
+        }
+        .autocomplete-dropdown .ac-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .autocomplete-dropdown .ac-item:hover,
+        .autocomplete-dropdown .ac-item.ac-active {
+            background: #f0f0f0;
+        }
+        .autocomplete-dropdown .ac-item .ac-tags {
+            font-size: 12px;
+            color: grey;
+        }
+        .autocomplete-dropdown .ac-no-results {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: grey;
+        }
+    </style>
+    <!-- <link rel="stylesheet" href="assets/css/meal-planner.css">
     <style>
         * {
             box-sizing: border-box;
@@ -659,89 +710,75 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 align-items: flex-start;
             }
         }
-    </style>
+    </style> -->
 </head>
 <body>
-
-<nav class="top-nav">
-    <div class="nav-inner">
-        <div class="nav-left">
-            <a href="dashboard.php" class="brand">MealMate</a>
-
-            <div class="nav-links">
-                <a href="recipes.php" class="<?= $currentPage === 'recipes.php' ? 'active' : '' ?>">Recipes</a>
-                <a href="fridge.php" class="<?= $currentPage === 'fridge.php' ? 'active' : '' ?>">Fridge</a>
-                <a href="meal-planner.php" class="<?= $currentPage === 'meal-planner.php' ? 'active' : '' ?>">Planner</a>
-                <a href="favourites.php" class="<?= $currentPage === 'favourites.php' ? 'active' : '' ?>">Favourites</a>
-            </div>
-        </div>
-
-        <div class="nav-right">
-            <a href="profile.php" class="profile-circle" title="My Profile">
-                <?= htmlspecialchars($initials) ?>
-            </a>
-            <a href="logout.php" class="signout-btn">Sign Out</a>
-        </div>
-    </div>
-</nav>
+    <?php require_once 'includes/nav.php'; ?>
 
 <div class="container">
-    <div class="page-header">
-        <h1>Meal Planner</h1>
-        <p>Create weekly meal plans and choose recipes for breakfast, lunch, and dinner.</p>
-    </div>
-
-    <?php if ($savedMsg): ?>
-        <div class="flash <?= $savedMsg['type'] === 'error' ? 'error' : '' ?>">
-            <?= htmlspecialchars($savedMsg['text']) ?>
-        </div>
-    <?php endif; ?>
-
-    <div class="top-section">
-        <div class="card">
+    <div class="d-flex flex-column flex-lg-row gap-4">
+        <div class="card p-3 mt-3 flex-grow-1 d-flex flex-column">
             <h2>Create New Plan</h2>
-            <form action="actions/meal-plan-save.php" method="POST">
+            <form action="actions/meal-plan-save.php" method="POST" class="d-flex flex-column flex-grow-1 mt-5">
                 <input type="hidden" name="mode" value="create_plan">
 
-                <div class="field-grid">
-                    <div class="field-group full">
+                <div class="d-flex flex-row gap-4 flex-wrap w-100">
+                    <div class="d-flex flex-column gap-2 flex-grow-1">
                         <label for="plan_name">Plan Name</label>
-                        <input type="text" id="plan_name" name="plan_name" placeholder="e.g. Week 3 Healthy Plan" required>
+                        <input type="text" id="plan_name" name="plan_name" class="form-control" placeholder="e.g. Week 3 Healthy Plan" required>
                     </div>
 
-                    <div class="field-group">
+                    <div class="d-flex flex-column gap-2 flex-grow-1">
                         <label for="start_date">Start Date</label>
-                        <input type="date" id="start_date" name="start_date" required>
+                        <input type="date" id="start_date" name="start_date" class="form-control" required>
                     </div>
 
-                    <div class="field-group">
+                    <div class="d-flex flex-column gap-2 flex-grow-1">
                         <label for="end_date">End Date</label>
-                        <input type="date" id="end_date" name="end_date" required>
+                        <input type="date" id="end_date" name="end_date" class="form-control" required>
                     </div>
                 </div>
 
-                <div class="small-note">Create a named plan first, then assign recipes into the planner grid below.</div>
+                <div class="small-note mt-2">Create a named plan first, then assign recipes into the planner grid below.</div>
 
-                <div style="margin-top: 16px;">
+                <div class="mt-auto text-end">
                     <button type="submit" class="btn btn-primary">Create Plan</button>
                 </div>
             </form>
         </div>
 
-        <div class="card">
+        <div class="card flex-grow-1 p-3 mt-3">
             <h2>My Existing Plans</h2>
-
             <?php if (!empty($allPlans)): ?>
-                <div class="plan-list">
-                    <?php foreach ($allPlans as $plan): ?>
-                        <div class="plan-item <?= (int)$plan['plan_id'] === $activePlanId ? 'active' : '' ?>">
-                            <a href="meal-planner.php?plan=<?= (int)$plan['plan_id'] ?>">
-                                <h3><?= htmlspecialchars($plan['plan_name']) ?></h3>
-                                <p><?= htmlspecialchars($plan['start_date']) ?> to <?= htmlspecialchars($plan['end_date']) ?></p>
-                                <p><?= (int)$plan['entry_count'] ?> planned meal<?= (int)$plan['entry_count'] === 1 ? '' : 's' ?></p>
-                            </a>
+                <p>Current Number of Plans: <?= count($allPlans) ?></p>
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <?php if (count($allPlans) > 1): ?>
+                        <button class="btn btn-sm btn-outline-none w-100" type="button" id="planCarouselPrev">
+                            &#9650;
+                        </button>
+                    <?php endif; ?>
+
+                    <div class="w-100 overflow-hidden" id="planCarouselTrack" style="height: 120px;">
+                        <div class="d-flex flex-column transition-transform" id="planCarouselInner" style="transition: transform 0.3s ease;">
+                            <?php foreach (array_reverse($allPlans) as $plan): ?>
+                                <div class="plan-carousel-slide" style="min-height: 120px;">
+                                    <div class="plan-item <?= (int)$plan['plan_id'] === $activePlanId ? 'active' : '' ?>">
+                                        <a href="meal-planner.php?plan=<?= (int)$plan['plan_id'] ?>">
+                                            <h3><?= htmlspecialchars($plan['plan_name']) ?></h3>
+                                            <p><?= htmlspecialchars($plan['start_date']) ?> to <?= htmlspecialchars($plan['end_date']) ?></p>
+                                            <p><?= (int)$plan['entry_count'] ?> planned meal<?= (int)$plan['entry_count'] === 1 ? '' : 's' ?></p>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
+                    </div>
+
+                    <?php if (count($allPlans) > 1): ?>
+                        <button class="btn btn-sm btn-outline-none w-100" type="button" id="planCarouselNext">
+                            &#9660;
+                        </button>
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <div class="empty-state">
@@ -751,237 +788,98 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         </div>
     </div>
 
-    <div class="stats-row">
-        <div class="card stat-card">
-            <h3>Active Plan</h3>
-            <div class="value"><?= $activePlan ? htmlspecialchars($activePlan['plan_name']) : 'None' ?></div>
-        </div>
-    </div>
-
     <?php if ($activePlan): ?>
-        <form action="actions/meal-plan-save.php" method="POST" id="plannerForm">
-            <input type="hidden" name="mode" value="save_entries">
-            <input type="hidden" name="plan_id" value="<?= (int)$activePlanId ?>">
+        <div class="card mt-3 p-3">
+            <form action="actions/meal-plan-save.php" method="POST" id="plannerForm">
+                <input type="hidden" name="mode" value="save_entries">
+                <input type="hidden" name="plan_id" value="<?= (int)$activePlanId ?>">
 
-            <div class="card">
-                <div class="planner-form-actions">
-                    <div class="planner-actions-left">
-                        <span><strong>Editing:</strong> <?= htmlspecialchars($activePlan['plan_name']) ?></span>
+                <div class="">
+                    <div class="d-flex flex-row gap-3 justify-content-between">
+                        <div class="mb-3">
+                            <h2 class="m-0">Editing:</h2>
+                            <span class="fs-medium"><?= htmlspecialchars($activePlan['plan_name']) ?></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-danger" id="deletePlanBtn">Delete Plan</button>
+                            <button type="submit" class="btn btn-primary">Save Meal Plan</button>
+                        </div>
                     </div>
-
-                    <div class="planner-actions-right">
-                        <button type="button" class="btn btn-danger" id="deletePlanBtn">Delete Plan</button>
-                        <button type="submit" class="btn btn-primary">Save Meal Plan</button>
-                    </div>
-                </div>
-
-                <div class="planner-wrapper">
-                    <table class="planner-table">
-                        <thead>
-                            <tr>
-                                <th>Day</th>
-                                <?php foreach ($slots as $slot): ?>
-                                    <th><?= htmlspecialchars($slot) ?></th>
-                                <?php endforeach; ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($days as $day): ?>
+                    <div class="">
+                        <table class="w-100">
+                            <thead>
                                 <tr>
-                                    <td class="day-cell">
-                                        <?= htmlspecialchars($day) ?>
-                                    </td>
-
+                                    <th>Day</th>
                                     <?php foreach ($slots as $slot): ?>
-                                        <?php $entry = $planEntries[$day][$slot] ?? null; ?>
-                                        <td>
-                                            <div class="meal-cell" data-day="<?= htmlspecialchars($day) ?>" data-slot="<?= htmlspecialchars($slot) ?>">
-                                                <div class="meal-slot-title"><?= htmlspecialchars($slot) ?></div>
-
-                                                <input
-                                                    type="hidden"
-                                                    class="hidden-input recipe-id-input"
-                                                    name="entries[<?= htmlspecialchars($day) ?>][<?= htmlspecialchars($slot) ?>][recipe_id]"
-                                                    value="<?= $entry ? (int)$entry['recipe_id'] : '' ?>"
-                                                >
-
-                                                <input
-                                                    type="hidden"
-                                                    class="hidden-input recipe-title-input"
-                                                    value="<?= $entry ? htmlspecialchars($entry['title']) : '' ?>"
-                                                >
-
-                                                <?php if ($entry): ?>
-                                                    <div class="selected-recipe recipe-display">
-                                                        <strong><?= htmlspecialchars($entry['title']) ?></strong>
-                                                    </div>
-                                                <?php else: ?>
-                                                    <div class="meal-placeholder recipe-display">No recipe selected</div>
-                                                <?php endif; ?>
-
-                                                <div class="cell-actions">
-                                                    <button type="button" class="cell-btn pick-btn open-picker-btn">Choose Recipe</button>
-                                                    <button type="button" class="cell-btn clear-btn clear-cell-btn">Clear</button>
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <th><?= htmlspecialchars($slot) ?></th>
                                     <?php endforeach; ?>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </form>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($days as $day): ?>
+                                    <tr>
+                                        <td class="day-cell">
+                                            <?= htmlspecialchars($day) ?>
+                                        </td>
 
-        <form action="actions/meal-plan-save.php" method="POST" id="deletePlanForm">
-            <input type="hidden" name="mode" value="delete_plan">
-            <input type="hidden" name="plan_id" value="<?= (int)$activePlanId ?>">
-        </form>
+                                        <?php foreach ($slots as $slot): ?>
+                                            <?php $entry = $planEntries[$day][$slot] ?? null; ?>
+                                            <td>
+                                                <div class="meal-cell" data-day="<?= htmlspecialchars($day) ?>" data-slot="<?= htmlspecialchars($slot) ?>">
+                                                        
+                                                    <input
+                                                        type="hidden"
+                                                        class="hidden-input recipe-id-input"
+                                                        name="entries[<?= htmlspecialchars($day) ?>][<?= htmlspecialchars($slot) ?>][recipe_id]"
+                                                        value="<?= $entry ? (int)$entry['recipe_id'] : '' ?>"
+                                                    >
+
+                                                    <input
+                                                        type="hidden"
+                                                        class="hidden-input recipe-title-input"
+                                                        value="<?= $entry ? htmlspecialchars($entry['title']) : '' ?>"
+                                                    >
+
+                                                    <?php if ($entry): ?>
+                                                        <div class="selected-recipe recipe-display">
+                                                            <strong><?= htmlspecialchars($entry['title']) ?></strong>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <div class="meal-placeholder recipe-display">No recipe selected</div>
+                                                    <?php endif; ?>
+
+                                                    <div class="cell-actions d-flex gap-1">
+                                                        <div class="autocomplete-wrapper flex-grow-1">
+                                                            <input type="text" class="form-control recipe-search-input" placeholder="Search recipes..." autocomplete="off">
+                                                            <div class="autocomplete-dropdown"></div>
+                                                        </div>
+                                                        <button type="button" class="btn px-2 me-2 py-0 btn-primary clear-cell-btn">Clear</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+
+            <form action="actions/meal-plan-save.php" method="POST" id="deletePlanForm">
+                <input type="hidden" name="mode" value="delete_plan">
+                <input type="hidden" name="plan_id" value="<?= (int)$activePlanId ?>">
+            </form>
+        </div>
     <?php else: ?>
         <div class="empty-state">
             Create a meal plan first to start filling your weekly planner.
         </div>
     <?php endif; ?>
-</div>
-
-<div class="modal-backdrop" id="recipeModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>Select a Recipe</h3>
-            <p>Choose a recipe for the selected meal slot.</p>
-        </div>
-
-        <div class="modal-search">
-            <input type="text" id="recipeSearchInput" placeholder="Search by recipe name or tag...">
-        </div>
-
-        <div class="modal-body">
-            <div class="recipe-picker-list" id="recipePickerList">
-                <?php foreach ($recipes as $recipe): ?>
-                    <?php
-                        $tags = trim((string)($recipe['tags'] ?? ''));
-                        $searchText = strtolower($recipe['title'] . ' ' . $tags);
-                        $totalTime = (int)$recipe['prep_time_min'] + (int)$recipe['cook_time_min'];
-                    ?>
-                    <div
-                        class="picker-item recipe-option"
-                        data-id="<?= (int)$recipe['recipe_id'] ?>"
-                        data-title="<?= htmlspecialchars($recipe['title']) ?>"
-                        data-search="<?= htmlspecialchars($searchText) ?>"
-                    >
-                        <div class="picker-info">
-                            <h4><?= htmlspecialchars($recipe['title']) ?></h4>
-                            <p><?= $totalTime ?> mins • <?= (int)$recipe['servings'] ?> serving<?= (int)$recipe['servings'] === 1 ? '' : 's' ?></p>
-                            <div class="picker-tags"><?= $tags !== '' ? htmlspecialchars($tags) : 'No dietary tags' ?></div>
-                        </div>
-                        <button type="button" class="btn btn-primary select-recipe-btn">Select</button>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
-        </div>
+    
     </div>
 </div>
-
-<script>
-    const recipeModal = document.getElementById('recipeModal');
-    const recipeSearchInput = document.getElementById('recipeSearchInput');
-    const recipeOptions = document.querySelectorAll('.recipe-option');
-    const openPickerButtons = document.querySelectorAll('.open-picker-btn');
-    const clearButtons = document.querySelectorAll('.clear-cell-btn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const deletePlanBtn = document.getElementById('deletePlanBtn');
-    const deletePlanForm = document.getElementById('deletePlanForm');
-
-    let activeMealCell = null;
-
-    function openModalForCell(cell) {
-        activeMealCell = cell;
-        recipeModal.classList.add('show');
-        recipeSearchInput.value = '';
-        filterRecipeOptions();
-        recipeSearchInput.focus();
-    }
-
-    function closeModal() {
-        recipeModal.classList.remove('show');
-        activeMealCell = null;
-    }
-
-    function filterRecipeOptions() {
-        const term = recipeSearchInput.value.trim().toLowerCase();
-        recipeOptions.forEach(option => {
-            const text = option.dataset.search || '';
-            option.style.display = text.includes(term) ? '' : 'none';
-        });
-    }
-
-    openPickerButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const cell = this.closest('.meal-cell');
-            openModalForCell(cell);
-        });
-    });
-
-    clearButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const cell = this.closest('.meal-cell');
-            cell.querySelector('.recipe-id-input').value = '';
-            cell.querySelector('.recipe-title-input').value = '';
-
-            cell.querySelector('.recipe-display').outerHTML =
-                '<div class="meal-placeholder recipe-display">No recipe selected</div>';
-        });
-    });
-
-    document.querySelectorAll('.select-recipe-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            if (!activeMealCell) return;
-
-            const option = this.closest('.recipe-option');
-            const recipeId = option.dataset.id;
-            const recipeTitle = option.dataset.title;
-
-            activeMealCell.querySelector('.recipe-id-input').value = recipeId;
-            activeMealCell.querySelector('.recipe-title-input').value = recipeTitle;
-
-            activeMealCell.querySelector('.recipe-display').outerHTML =
-                `<div class="selected-recipe recipe-display">
-                    <strong>${recipeTitle}</strong>
-                </div>`;
-
-            closeModal();
-        });
-    });
-
-    recipeSearchInput.addEventListener('input', filterRecipeOptions);
-    closeModalBtn.addEventListener('click', closeModal);
-
-    recipeModal.addEventListener('click', function (e) {
-        if (e.target === recipeModal) {
-            closeModal();
-        }
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && recipeModal.classList.contains('show')) {
-            closeModal();
-        }
-    });
-
-    if (deletePlanBtn && deletePlanForm) {
-        deletePlanBtn.addEventListener('click', function () {
-            const confirmed = confirm('Are you sure you want to delete this meal plan? This cannot be undone.');
-            if (confirmed) {
-                deletePlanForm.submit();
-            }
-        });
-    }
-</script>
-
+    <?php require_once 'includes/footer.php'; ?>
 </body>
 </html>

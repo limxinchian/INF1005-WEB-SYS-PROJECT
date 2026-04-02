@@ -11948,6 +11948,10 @@ textarea.form-control-lg {
   font-size: 1rem !important;
 }
 
+.fs-mini {
+  font-size: 0.1rem !important;
+}
+
 .fs-tiny {
   font-size: 0.5rem !important;
 }
