@@ -38,3 +38,19 @@
   font-size: 14px;
   color: grey;
 }
+
+table {
+  table-layout: fixed;
+}
+
+table td:first-child,
+table th:first-child {
+  width: 100px;
+}
+
+table td,
+table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}

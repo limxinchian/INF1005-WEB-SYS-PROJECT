@@ -99,7 +99,7 @@
         $title = "MealMate - Meal Planner";
         include_once 'includes/header.php';
     ?>
-    <link rel="stylesheet" href="assets/css/meal_planner.css">
+    <link rel="stylesheet" href="assets/css/meal-planner.css">
     <script>
         // do not remove, this is to make sure the dropdown works!!!
         const allRecipes = <?= json_encode(array_map(fn($r) => [
