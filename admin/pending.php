@@ -1,78 +1,38 @@
-<?php
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../includes/admin-guard.php';
-
-try {
-    $stmt = $pdo->query("
-        SELECT 
-            r.recipe_id,
-            r.title,
-            r.status,
-            r.created_at,
-            u.user_id,
-            u.username,
-            u.email
-        FROM recipes r
-        JOIN users u ON r.submitted_by = u.user_id
-        WHERE r.status = 'pending'
-        ORDER BY r.created_at DESC
-    ");
-
-    $pendingRecipes = $stmt->fetchAll();
-} catch (Throwable $e) {
-    die('Failed to load pending recipes: ' . $e->getMessage());
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pending Recipes</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
+    <?php
+        require_once __DIR__ . '/../config/db.php';
+        require_once __DIR__ . '/../includes/admin-guard.php';
 
-        table {
-            border-collapse: collapse;
-            margin-top: 16px;
-        }
+        try {
+            $stmt = $pdo->query("
+                SELECT 
+                    r.recipe_id,
+                    r.title,
+                    r.status,
+                    r.created_at,
+                    u.user_id,
+                    u.username,
+                    u.email
+                FROM recipes r
+                JOIN users u ON r.submitted_by = u.user_id
+                WHERE r.status = 'pending'
+                ORDER BY r.created_at DESC
+            ");
 
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            vertical-align: middle;
+            $pendingRecipes = $stmt->fetchAll();
+        } catch (Throwable $e) {
+            die('Failed to load pending recipes: ' . $e->getMessage());
         }
-
-        td.actions {
-            white-space: nowrap;
-        }
-
-        td.actions form {
-            display: inline-block;
-            margin: 0 4px 0 0;
-        }
-
-        .top-links {
-            margin-bottom: 16px;
-        }
-
-        .top-links a {
-            margin-right: 12px;
-        }
-
-        .message {
-            color: green;
-            font-weight: bold;
-            margin: 12px 0;
-        }
-    </style>
+        $title = "MealMate - Pending Recipes";
+        include_once '../includes/header.php';
+    ?>
 </head>
 <body>
+    <?php include_once '../includes/admin_nav.php'; ?>
 
-    <h1>Pending Recipes</h1>
+    <h1 class="my-3">Pending Recipes</h1>
 
     <?php if (isset($_GET['message'])): ?>
         <p class="message"><?= htmlspecialchars($_GET['message']) ?></p>
@@ -82,20 +42,20 @@ try {
         <p>No pending recipes found.</p>
         <p><a href="dashboard.php">Return to Admin Dashboard</a></p>
     <?php else: ?>
-        <table>
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Recipe ID</th>
-                    <th>Title</th>
-                    <th>Submitted By</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
+                    <th scope="col" class="fw-bold text-nowrap">Recipe ID</th>
+                    <th scope="col" class="fw-bold text-nowrap">Title</th>
+                    <th scope="col" class="fw-bold text-nowrap">Submitted By</th>
+                    <th scope="col" class="fw-bold text-nowrap">Email</th>
+                    <th scope="col" class="fw-bold text-nowrap">Status</th>
+                    <th scope="col" class="fw-bold text-nowrap">Created At</th>
+                    <th scope="col" class="fw-bold text-nowrap">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($pendingRecipes as $recipe): ?>
+                <?php foreach (array_reverse($pendingRecipes) as $recipe): ?>
                     <tr>
                         <td><?= htmlspecialchars($recipe['recipe_id']) ?></td>
                         <td><?= htmlspecialchars($recipe['title']) ?></td>
@@ -103,27 +63,25 @@ try {
                         <td><?= htmlspecialchars($recipe['email']) ?></td>
                         <td><?= htmlspecialchars($recipe['status']) ?></td>
                         <td><?= htmlspecialchars($recipe['created_at']) ?></td>
-                        <td class="actions">
+                        <td class="actions text-nowrap">
                             <form action="../actions/recipes/admin-approve.php" method="POST">
                                 <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['recipe_id']) ?>">
                                 <input type="hidden" name="action" value="approve">
-                                <button type="submit">Approve</button>
+                                <button type="submit" class="btn btn-primary w-100">Approve</button>
                             </form>
 
-                            <form action="../actions/recipes/admin-approve.php" method="POST">
+                            <form class="mt-2" action="../actions/recipes/admin-approve.php" method="POST">
                                 <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['recipe_id']) ?>">
                                 <input type="hidden" name="action" value="reject">
-                                <button type="submit">Reject</button>
+                                <button type="submit" class="btn btn-danger w-100">Reject</button>
                             </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-        <p style="margin-top: 16px;">
-            <a href="dashboard.php">Back to Dashboard</a>
-        </p>
     <?php endif; ?>
+    
+    <?php include_once '../includes/footer.php'; ?>
 </body>
 </html>
