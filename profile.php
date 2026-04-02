@@ -82,9 +82,9 @@
                                 <img src="<?= htmlspecialchars(str_replace('=s96-c', '=s164-c', $user['avatar_url'])) ?>"
                                         alt="Avatar"
                                         class="rounded-circle profile_avatar"
-                                        onerror="this.style.display='none';this.nextElementSibling.style.display='';">
-                                <div class="rounded-circle bg-success text-white d-inline-flex
-                                            align-items-center justify-content-center profile_avatar_placeholder" style="display:none;">
+                                        onerror="this.classList.add('d-none');var p=this.nextElementSibling;p.classList.remove('d-none');p.classList.add('d-inline-flex');">
+                                <div class="rounded-circle bg-success text-white
+                                            align-items-center justify-content-center profile_avatar_placeholder d-none">
                                     <span><?= strtoupper(substr($user['username'], 0, 1)) ?></span>
                                 </div>
                             <?php else: ?>

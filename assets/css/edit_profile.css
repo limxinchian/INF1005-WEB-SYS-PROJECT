@@ -1,0 +1,15 @@
+.profile_avatar {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.profile_avatar_placeholder {
+  width: 150px;
+  height: 150px;
+  font-size: 2.5rem;
+}
+
+.profile_avatar_placeholder > span {
+  user-select: none;
+}
