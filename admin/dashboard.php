@@ -98,7 +98,6 @@
             <?php if (empty($recentPendingRecipes)): ?>
                 <p>No pending recipes at the moment.</p>
             <?php else: ?>
-                <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -121,7 +120,6 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                </div>
             <?php endif; ?>
         </div>
     </div>
