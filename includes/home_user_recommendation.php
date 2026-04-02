@@ -15,8 +15,7 @@
 
 <div class="col-md-4">
     <div class="member_review card d-flex flex flex-row p-4 min-vh-25">
-        <img class="rounded-circle" height="75" width="75" src=<?php echo htmlspecialchars($photo) ?> alt=<?php echo htmlspecialchars($name) ?>>
-        <div class="ms-5">
+<img class="rounded-circle" height="75" width="75" src="<?= htmlspecialchars($photo); ?>" alt="<?= htmlspecialchars($name); ?>">        <div class="ms-5">
             <div class="member_name">
                 <p class="fs-4"><?php echo htmlspecialchars($name); ?></p>
             </div>
