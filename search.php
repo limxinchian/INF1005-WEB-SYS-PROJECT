@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +8,6 @@
         $search_keywords = isset($_GET['keyword']) ? explode(' ', htmlspecialchars(trim($_GET['keyword']))) : [];
         $search_tag = isset($_GET['tag']) ? htmlspecialchars(trim($_GET['tag'])) : '';
         $result = null;
-
 
         if (empty($search_keywords)) {
             $stmt = "SELECT r.recipe_id, r.title, r.description,
