@@ -29,9 +29,7 @@
     <div class="container-fluid">
         <div class="mt-3 d-flex flex-row justify-content-between align-items-center">
             <h1>Dietary Tags</h1>
-            <div class="top-links">
-                <a href="tag-add.php" class="btn btn-primary">Add Tag</a>
-            </div>
+            <a href="tag-add.php" class="btn btn-primary">Add Tag</a>
         </div>
         <?php if (isset($_GET['message'])): ?>
             <p class="message"><?= htmlspecialchars($_GET['message']) ?></p>

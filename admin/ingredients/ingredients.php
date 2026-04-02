@@ -28,7 +28,10 @@
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
 
-    <h1>Ingredients</h1>
+    <div class="mt-3 d-flex flex-row justify-content-between align-items-center">
+        <h1>Ingredients</h1>
+        <a href="ingredient-add.php" class="btn btn-primary">Add Ingredient</a>
+    </div>
 
     <?php if (isset($_GET['message'])): ?>
         <p class="message"><?= htmlspecialchars($_GET['message']) ?></p>
