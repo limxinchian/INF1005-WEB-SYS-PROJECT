@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <?php
-        require_once __DIR__ . '/../config/db.php';
-        require_once __DIR__ . '/../includes/admin-guard.php';
+        require_once __DIR__ . '/../../config/db.php';
+        require_once __DIR__ . '/../../includes/admin-guard.php';
 
         try {
             $stmt = $pdo->query("
@@ -26,11 +26,11 @@
             die('Failed to load pending recipes: ' . $e->getMessage());
         }
         $title = "MealMate - Pending Recipes";
-        include_once '../includes/header.php';
+        include_once '../../includes/header.php';
     ?>
 </head>
 <body>
-    <?php include_once '../includes/admin_nav.php'; ?>
+    <?php include_once '../../includes/admin_nav.php'; ?>
 
     <h1 class="my-3">Pending Recipes</h1>
 
@@ -82,6 +82,6 @@
         </table>
     <?php endif; ?>
     
-    <?php include_once '../includes/footer.php'; ?>
+    <?php include_once '../../includes/footer.php'; ?>
 </body>
 </html>

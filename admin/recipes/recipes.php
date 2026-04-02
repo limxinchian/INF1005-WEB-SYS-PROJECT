@@ -29,54 +29,6 @@
         $title = "MealMate - All Recipes";
         include_once '../../includes/header.php';
     ?>
-    <!-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
-
-        table {
-            border-collapse: collapse;
-            margin-top: 16px;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .top-links {
-            margin-bottom: 16px;
-        }
-
-        .top-links a {
-            margin-right: 12px;
-        }
-
-        .message {
-            color: green;
-            font-weight: bold;
-            margin: 12px 0;
-        }
-
-        .actions {
-            white-space: nowrap;
-        }
-
-        .actions a,
-        .actions button {
-            margin-right: 6px;
-        }
-
-        .actions form {
-            display: inline-block;
-            margin: 0;
-        }
-    </style> -->
 </head>
 
 <body>
