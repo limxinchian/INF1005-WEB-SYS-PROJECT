@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php
+    <?php    
         // ============================================================
         //  login.php
         //  PURPOSE : Display the login form
@@ -10,6 +10,8 @@
         require_once 'config/session.php';
         require_once 'config/db.php';
         require_once __DIR__ . "/vendor/autoload.php";
+
+       
 
         // Read email back from GET parameter if redirected from failed login
         $previousEmail = htmlspecialchars($_GET['email'] ?? '');
@@ -40,6 +42,7 @@
     <script src="assets/js/login.js" defer></script>
 </head>
 <body>
+    <main>
     <?php require_once 'includes/nav.php'; ?>
     <h1 class="text-center my-lg-5">Login to MealMate</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
@@ -163,5 +166,6 @@
         <a href="<?= htmlspecialchars($authUrl) ?>" class="btn btn-primary"><span class="overpass-mono-normal">Sign in with Google</span></a>
     </div>
     <?php require_once 'includes/footer.php'; ?>
+    </main>
 </body>
 </html>

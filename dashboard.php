@@ -110,6 +110,7 @@
     <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body>
+    <main>
     <?php require_once 'includes/nav.php'; ?>
 
     <div class="container">
@@ -117,7 +118,7 @@
             <h1>Welcome back, <?= currentUsername(); ?>!</h1>
         </div>
 
-        <h2 class="mt-3">Summary</h1>
+        <h2 class="mt-3">Summary</h2>
         <div class="d-flex flex-column flex-lg-row gap-4 mb-4">
             <div class="card stat-card flex-fill px-3 py-2">
                 <h3 class="fs-medium">Favourite Recipes</h3>
@@ -135,7 +136,7 @@
             </div>
         </div>
 
-        <h2>Quick Actions</h1>
+        <h2>Quick Actions</h2>
         <div class="d-flex flex-column flex-lg-row gap-4 mb-4">
             <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="my-recipes.php">Add Recipe</a>
             <a class="flex-fill px-3 py-2 text-center btn btn-primary text-decoration-none fs-large" href="meal-planner.php">Add Meal</a>
@@ -260,5 +261,6 @@
     </div>
 
     <?php require_once 'includes/footer.php'; ?>
+    </main>>
 </body>
 </html>
