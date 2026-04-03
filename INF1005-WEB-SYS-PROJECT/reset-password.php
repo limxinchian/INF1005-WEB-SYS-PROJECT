@@ -72,8 +72,9 @@
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
-    <h1 class="text-center my-5">Reset your Password</h1>
+    <main>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
+        <h1 class="text-center my-5">Reset your Password</h1>
         <form method="POST"
                       action="auth/reset-password-process.php"
                       id="resetForm"
@@ -163,7 +164,6 @@
 
                 </form>
     </div>
-    <?php require_once 'includes/footer.php'; ?>
     <script>
         document.getElementById('toggleNew').addEventListener('click', function () {
             const pwd = document.getElementById('new_password');
@@ -256,5 +256,7 @@
             setError(this, 'confirmPasswordError', null);
         });
     </script>
+    </main>
+    <?php require_once 'includes/footer.php'; ?>
 </body>
 </html>
