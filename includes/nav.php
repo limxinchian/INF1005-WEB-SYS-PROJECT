@@ -41,6 +41,7 @@
                         <li><a class="text-end dropdown-item" href="meal-planner.php">Meal Planner</a></li>
                         <li><a class="text-end dropdown-item" href="fridge.php">Fridge</a></li>
                         <li><a class="text-end dropdown-item" href="favourites.php">Favourites</a></li>
+                        <li><a class="text-end dropdown-item" href="recipes.php">My Recipes</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="text-end dropdown-item" href="profile.php">View Profile</a></li>
                         <li><a class="text-end dropdown-item" href="edit_profile.php">Edit Profile</a></li>
