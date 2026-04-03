@@ -3,11 +3,23 @@
 <head>
     <?php
         require_once __DIR__ . '/config/session.php';
+        require_once 'config/db.php';
 
         if (isLoggedIn()) {
             redirect('dashboard.php');
         }
+        
+        $stmt = $pdo->prepare("SELECT recipe_id, title, description
+            FROM recipes
+            WHERE status = 'approved'
+            LIMIT 3");
+
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        $title = "MealMate - Home";
         include_once 'includes/header.php';
+        require_once 'helper/get-image-link.php';
     ?>    
     <link rel="stylesheet" href="assets/css/index.css">
 </head>
@@ -23,54 +35,30 @@
         <h2 class="text-center mt-4">Our New Recipes</h2>
         <div class="container my-3 d-none d-md-block">
             <div class="row g-4">
-            <?php
-                $title = "Low-Fat Berry Blue Frozen Dessert";
-                $description = "A refreshing low-fat blueberry frozen dessert bursting with natural sweetness and vibrant color. Perfect for a guilt-free treat on a hot day.";
-                $photo = "assets/images/recipe_1.jpg";
-                include 'includes/home_recipe.php';
-            ?>
-            <?php
-                $title = "Roast Prime Rib au Poivre with Mixed Peppercorns";
-                $description = "White, black, green, and pink peppercorns add wonderful flavor to this very special prime rib. If possible, search out a butcher who carries dry-aged beef-it&rsquo;s more tender, flavorful, and juicy than the non-aged variety. A full-bodied California Cabernet Sauvignon or French Bordeaux is the perfect wine to serve. As for vegetables, mix butter and tarragon with cooked baby carrots and green beans for a delicious accompaniment.";
-                $photo = "assets/images/recipe_2.png";
-                include 'includes/home_recipe.php';
-            ?>
-            <?php
-                $title = "Matcha Oat Milk Latte";
-                $description = "A refreshing matcha oat milk latte which strikes a harmonious balance between deep matcha flavors, nice creaminess and a light, balanced natural sweetness.";
-                $photo = "assets/images/recipe_3.jpg";
-                include 'includes/home_recipe.php';
-            ?>
+                <?php foreach($results as $recipe):
+                    $id = $recipe['recipe_id'];
+                    $title = $recipe['title'];
+                    $description = $recipe['description'];
+                    $photo = getImageLink($recipe['title'], $recipe['recipe_id']);
+                    include 'includes/home_recipe.php';
+                endforeach; ?>
             </div>
         </div>
 
         <div class="container my-5 d-md-none">
             <div id="recipesCarousel" class="carousel slide" data-bs-ride="true">
                 <div class="carousel-inner">
-                    <div class="carousel-item active">
+                <?php foreach($results as $index => $recipe): ?>
+                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
                         <?php
-                            $title = "Low-Fat Berry Blue Frozen Dessert";
-                            $description = "A refreshing low-fat blueberry frozen dessert bursting with natural sweetness and vibrant color. Perfect for a guilt-free treat on a hot day.";
-                            $photo = "assets/images/recipe_1.jpg";
+                            $id = $recipe['recipe_id'];
+                            $title = $recipe['title'];
+                            $description = $recipe['description'];
+                            $photo = getImageLink($recipe['title'], $recipe['recipe_id']);
                             include 'includes/home_recipe.php';
                         ?>
                     </div>
-                    <div class="carousel-item">
-                        <?php
-                            $title = "Roast Prime Rib au Poivre with Mixed Peppercorns";
-                            $description = "White, black, green, and pink peppercorns add wonderful flavor to this very special prime rib. If possible, search out a butcher who carries dry-aged beef-it&rsquo;s more tender, flavorful, and juicy than the non-aged variety. A full-bodied California Cabernet Sauvignon or French Bordeaux is the perfect wine to serve. As for vegetables, mix butter and tarragon with cooked baby carrots and green beans for a delicious accompaniment.";
-                            $photo = "assets/images/recipe_2.png";
-                            include 'includes/home_recipe.php';
-                        ?>
-                    </div>
-                    <div class="carousel-item">
-                        <?php
-                            $title = "Matcha Oat Milk Latte";
-                            $description = "A refreshing matcha oat milk latte which strikes a harmonious balance between deep matcha flavors, nice creaminess and a light, balanced natural sweetness.";
-                            $photo = "assets/images/recipe_3.jpg";
-                            include 'includes/home_recipe.php';
-                        ?>
-                    </div>
+                <?php endforeach; ?>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#recipesCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>

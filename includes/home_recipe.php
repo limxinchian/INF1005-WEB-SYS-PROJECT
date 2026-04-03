@@ -22,6 +22,6 @@
             <p class="fs-4"><?php echo htmlspecialchars($title); ?></p>
             <p><?php echo custom_echo(htmlspecialchars($description), 100); ?></p>
         </div>
-        <a class="text-end me-4 mb-4 text-decoration-none" href="#">Go to Recipe →</a>
+        <a class="text-end me-4 mb-4 text-decoration-none" href="./recipe-detail.php?id=<?php echo $id; ?>">Go to Recipe →</a>
     </div>
 </div>
