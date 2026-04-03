@@ -44,4 +44,4 @@ session_start();
 setFlash('success', 'You have been logged out successfully. See you soon, ' . htmlspecialchars($username) . '!');
 
 // Step 6 — Redirect to login page
-redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+redirect('/INF1005-WEB-SYS-PROJECT/index.php');

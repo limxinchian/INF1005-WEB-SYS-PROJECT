@@ -4,4 +4,6 @@ test.php
 assets/images/uploads/
 .DS_Store
 Thumbs.db
-/vendor/
+node_modules/
+vendor/
+*.jpg

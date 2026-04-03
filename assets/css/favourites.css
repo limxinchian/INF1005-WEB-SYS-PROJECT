@@ -1,0 +1,12 @@
+.images {
+  width: 18em;
+  height: 12em;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

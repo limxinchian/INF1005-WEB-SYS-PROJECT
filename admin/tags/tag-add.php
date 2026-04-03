@@ -1,95 +1,64 @@
-<?php
-require_once __DIR__ . '/../../config/db.php';
-require_once __DIR__ . '/../../includes/admin-guard.php';
-
-function makeSlug(string $text): string
-{
-    $text = strtolower(trim($text));
-    $text = preg_replace('/[^a-z0-9]+/', '-', $text);
-    return trim($text, '-');
-}
-
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $tagName = trim($_POST['tag_name'] ?? '');
-        $tagSlug = trim($_POST['tag_slug'] ?? '');
-
-        if ($tagName === '') {
-            die('Tag name is required.');
-        }
-
-        if ($tagSlug === '') {
-            $tagSlug = makeSlug($tagName);
-        }
-
-        $stmt = $pdo->prepare("
-            INSERT INTO dietary_tags (tag_name, tag_slug)
-            VALUES (?, ?)
-        ");
-        $stmt->execute([$tagName, $tagSlug]);
-
-        header('Location: tags.php?message=' . urlencode('Tag added successfully.'));
-        exit();
-    }
-} catch (Throwable $e) {
-    die('Failed to add tag: ' . $e->getMessage());
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Tag</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
+    <?php
+        require_once __DIR__ . '/../../config/db.php';
+        require_once __DIR__ . '/../../includes/admin-guard.php';
+
+        function makeSlug(string $text): string
+        {
+            $text = strtolower(trim($text));
+            $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+            return trim($text, '-');
         }
 
-        form {
-            max-width: 600px;
-        }
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $tagName = trim($_POST['tag_name'] ?? '');
+                $tagSlug = trim($_POST['tag_slug'] ?? '');
 
-        label {
-            display: block;
-            margin-top: 12px;
-            font-weight: bold;
-        }
+                if ($tagName === '') {
+                    die('Tag name is required.');
+                }
 
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 6px;
-            box-sizing: border-box;
-        }
+                if ($tagSlug === '') {
+                    $tagSlug = makeSlug($tagName);
+                }
 
-        .actions {
-            margin-top: 20px;
-        }
+                $stmt = $pdo->prepare("
+                    INSERT INTO dietary_tags (tag_name, tag_slug)
+                    VALUES (?, ?)
+                ");
+                $stmt->execute([$tagName, $tagSlug]);
 
-        .actions button,
-        .actions a {
-            margin-right: 12px;
+                header('Location: tags.php?message=' . urlencode('Tag added successfully.'));
+                exit();
+            }
+        } catch (Throwable $e) {
+            die('Failed to add tag: ' . $e->getMessage());
         }
-    </style>
+        $title = "MealMate - Add Dietary Tag";
+        include_once '../../includes/header.php';
+    ?>
 </head>
 <body>
-    <h1>Add Tag</h1>
+    <?php include_once '../../includes/admin_nav.php'; ?>
+    <div class="container-fluid mt-3">
+        <h1>Add Tag</h1>
 
-    <p><a href="tags.php">Back to Tags</a></p>
+        <form method="POST" class="d-flex flex-column pe-lg-20">
+            <label for="tag_name" class="form-label mt-3 fs-large">Tag Name</label>
+            <input type="text" id="tag_name" name="tag_name" class="form-control" required>
 
-    <form method="POST">
-        <label for="tag_name">Tag Name</label>
-        <input type="text" id="tag_name" name="tag_name" required>
+            <label for="tag_slug" class="form-label mt-3 fs-large">Tag Slug</label>
+            <input type="text" id="tag_slug" name="tag_slug" class="form-control">
 
-        <label for="tag_slug">Tag Slug</label>
-        <input type="text" id="tag_slug" name="tag_slug">
-
-        <div class="actions">
-            <button type="submit">Add Tag</button>
-            <a href="tags.php">Cancel</a>
-        </div>
-    </form>
+            <div class="actions mt-3 d-flex justify-content-end gap-2">
+                <a href="tags.php" class="btn btn-danger">Cancel</a>
+                <button type="submit" class="btn btn-primary">Add Tag</button>
+            </div>
+        </form>
+    </div>
+    <?php include_once '../../includes/footer.php'; ?>
 </body>
 </html>

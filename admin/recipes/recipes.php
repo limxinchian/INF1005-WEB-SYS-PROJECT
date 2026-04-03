@@ -1,91 +1,38 @@
-<?php
-require_once __DIR__ . '/../../config/db.php';
-require_once __DIR__ . '/../../includes/admin-guard.php';
-
-try {
-    $stmt = $pdo->query("
-    SELECT
-        r.recipe_id,
-        r.title,
-        r.status,
-        r.created_at,
-        r.updated_at,
-        u.username,
-        u.email
-    FROM recipes r
-    JOIN users u ON r.submitted_by = u.user_id
-    WHERE r.deleted_at IS NULL
-    ORDER BY r.created_at DESC
-");
-
-    $recipes = $stmt->fetchAll();
-} catch (Throwable $e) {
-    die('Failed to load recipes: ' . $e->getMessage());
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Recipes</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
+    <?php
+        require_once __DIR__ . '/../../config/db.php';
+        require_once __DIR__ . '/../../includes/admin-guard.php';
+
+        try {
+            $stmt = $pdo->query("
+            SELECT
+                r.recipe_id,
+                r.title,
+                r.status,
+                r.created_at,
+                r.updated_at,
+                u.username,
+                u.email
+            FROM recipes r
+            JOIN users u ON r.submitted_by = u.user_id
+            WHERE r.deleted_at IS NULL
+            ORDER BY r.created_at DESC
+        ");
+
+            $recipes = $stmt->fetchAll();
+        } catch (Throwable $e) {
+            die('Failed to load recipes: ' . $e->getMessage());
         }
 
-        table {
-            border-collapse: collapse;
-            margin-top: 16px;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .top-links {
-            margin-bottom: 16px;
-        }
-
-        .top-links a {
-            margin-right: 12px;
-        }
-
-        .message {
-            color: green;
-            font-weight: bold;
-            margin: 12px 0;
-        }
-
-        .actions {
-            white-space: nowrap;
-        }
-
-        .actions a,
-        .actions button {
-            margin-right: 6px;
-        }
-
-        .actions form {
-            display: inline-block;
-            margin: 0;
-        }
-    </style>
+        $title = "MealMate - All Recipes";
+        include_once '../../includes/header.php';
+    ?>
 </head>
 
 <body>
-    <div class="top-links">
-        <a href="../dashboard.php">Back to Dashboard</a>
-        <a href="../pending.php">View Pending Recipes</a>
-        <a href="recipes-trash.php">View Deleted Recipes</a>
-    </div>
+    <?php include_once '../../includes/admin_nav.php'; ?>
 
     <h1>All Recipes</h1>
 
@@ -96,35 +43,35 @@ try {
     <?php if (empty($recipes)): ?>
         <p>No recipes found.</p>
     <?php else: ?>
-        <table>
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Recipe ID</th>
-                    <th>Title</th>
-                    <th>Submitted By</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>Actions</th>
+                    <th scope="col" class="fw-bold text-nowrap">Recipe ID</th>
+                    <th scope="col" class="fw-bold text-nowrap">Title</th>
+                    <th scope="col" class="fw-bold text-nowrap">Submitted By</th>
+                    <th scope="col" class="fw-bold text-nowrap">Email</th>
+                    <th scope="col" class="fw-bold text-nowrap">Status</th>
+                    <th scope="col" class="fw-bold text-nowrap">Created At</th>
+                    <th scope="col" class="fw-bold text-nowrap">Updated At</th>
+                    <th scope="col" class="fw-bold text-nowrap">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($recipes as $recipe): ?>
+                <?php foreach (array_reverse($recipes) as $recipe): ?>
                     <tr>
-                        <td><?= htmlspecialchars($recipe['recipe_id']) ?></td>
-                        <td><?= htmlspecialchars($recipe['title']) ?></td>
-                        <td><?= htmlspecialchars($recipe['username']) ?></td>
-                        <td><?= htmlspecialchars($recipe['email']) ?></td>
-                        <td><?= htmlspecialchars($recipe['status']) ?></td>
-                        <td><?= htmlspecialchars($recipe['created_at']) ?></td>
-                        <td><?= htmlspecialchars($recipe['updated_at']) ?></td>
+                        <td scope="row" class="fw-bold text-nowrap"><?= htmlspecialchars($recipe['recipe_id']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['title']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['username']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['email']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['status']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['created_at']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['updated_at']) ?></td>
                         <td class="actions">
-                            <a href="recipe-edit.php?recipe_id=<?= urlencode($recipe['recipe_id']) ?>">Edit</a>
+                            <a href="recipe-edit.php?recipe_id=<?= urlencode($recipe['recipe_id']) ?>" class="btn btn-warning w-100">Edit</a>
 
-                            <form action="../../actions/recipes/recipe-delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+                            <form class="mt-1" action="../../actions/recipes/recipe-delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
                                 <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['recipe_id']) ?>">
-                                <button type="submit">Delete</button>
+                                <button type="submit" class="btn btn-danger w-100">Delete</button>
                             </form>
                         </td>
                     </tr>

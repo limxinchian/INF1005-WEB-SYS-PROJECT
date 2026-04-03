@@ -1,0 +1,49 @@
+#hero{
+    background-image: url("../images/hero_background.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.home_recipe_photo {
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.home_recipe_photo img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.home_recipe_info{
+    height: 16em;
+}
+
+.member_review{
+    height: 100%;
+}
+
+.carousel-control-prev{
+    z-index: 100;
+}
+
+.carousel-control-next{
+    z-index: 100;
+}
+
+.about_us{
+    padding-left: 6em;
+    padding-right: 6em;
+}
+
+@media (max-width: 768px){
+    .member_review{
+        height: 100%;
+    }
+
+    .about_us{
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+}
