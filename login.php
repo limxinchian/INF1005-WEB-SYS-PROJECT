@@ -41,7 +41,7 @@
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
-    <h1 class="text-center my-lg-5">Login to MealMate</h1>
+    <h1 class="text-center my-5">Login to MealMate</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
         <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
             <!-- CSRF Token -->
@@ -103,15 +103,22 @@
                 </div>
             </div>
 
-            <!-- Remember Me -->
-            <div class="mb-lg-3 form-check">
-                <input type="checkbox"
-                        class="form-check-input"
-                        id="remember"
-                        name="remember">
-                <label class="form-check-label overpass-mono-normal" for="remember">
-                    Remember me for 30 days
-                </label>
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-lg-3 gap-2">
+                <!-- Remember Me -->
+                <div class="mb-lg-3 form-check">
+                    <input type="checkbox"
+                            class="form-check-input"
+                            id="remember"
+                            name="remember">
+                    <label class="form-check-label overpass-mono-normal" for="remember">
+                        Remember me for 30 days
+                    </label>
+                </div>
+
+                <!-- Forgot Password -->
+                <a href="forgotpassword.php" class="text-primary overpass-mono-normal fs-small">
+                    Forgot your password?
+                </a>
             </div>
 
             <!-- Google reCAPTCHA -->

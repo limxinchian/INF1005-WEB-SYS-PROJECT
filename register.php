@@ -36,7 +36,7 @@
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
-    <h1 class="text-center my-lg-5">Register your Account</h1>
+    <h1 class="text-center my-5">Register your Account</h1>
     <div class="container d-flex justify-content-center align-items-center">
         <form method="POST" action="auth/register-process.php" id="registerForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($token) ?>">
