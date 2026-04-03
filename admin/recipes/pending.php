@@ -40,7 +40,7 @@
 
     <?php if (empty($pendingRecipes)): ?>
         <p>No pending recipes found.</p>
-        <p><a href="dashboard.php">Return to Admin Dashboard</a></p>
+        <p><a href="../dashboard.php">Return to Admin Dashboard</a></p>
     <?php else: ?>
         <table class="table table-striped">
             <thead>

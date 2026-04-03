@@ -56,31 +56,31 @@
     <div class="container-fluid px-3 py-4">
         <div class="row g-3 mb-4 justify-content-center">
             <div class="col-12 col-md-4 col-lg">
-                <div class="card p-3 mb-0">
+                <div class="card p-3 mb-0 h-100">
                     <h2>Total Users</h2>
                     <p class="fs-medium"><?= htmlspecialchars($totalUsers) ?></p>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg">
-                <div class="card p-3 mb-0">
+                <div class="card p-3 mb-0 h-100">
                     <h2>Total Recipes</h2>
                     <p class="fs-medium"><?= htmlspecialchars($totalRecipes) ?></p>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg">
-                <div class="card p-3 mb-0">
+                <div class="card p-3 mb-0 h-100">
                     <h2>Pending Recipes</h2>
                     <p class="fs-medium"><?= htmlspecialchars($pendingRecipes) ?></p>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg">
-                <div class="card p-3 mb-0">
+                <div class="card p-3 mb-0 h-100">
                     <h2>Approved Recipes</h2>
                     <p class="fs-medium"><?= htmlspecialchars($approvedRecipes) ?></p>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg">
-                <div class="card p-3 mb-0">
+                <div class="card p-3 mb-0 h-100">
                     <h2>Rejected Recipes</h2>
                     <p class="fs-medium"><?= htmlspecialchars($rejectedRecipes) ?></p>
                 </div>
@@ -92,8 +92,8 @@
             <h2>Recent Pending Recipes</h2>
 
             <div class="d-flex flex-row gap-3 mb-3">
-                <a class="" href="pending.php">Pending Recipes</a>
-                <a class="" href="recipes/recipes.php">All Recipes</a>
+                <a href="recipes/pending.php">Pending Recipes</a>
+                <a href="recipes/recipes.php">All Recipes</a>
             </div>
             <?php if (empty($recentPendingRecipes)): ?>
                 <p>No pending recipes at the moment.</p>
