@@ -6,3 +6,4 @@ assets/images/uploads/
 Thumbs.db
 node_modules/
 vendor/
+*.jpg

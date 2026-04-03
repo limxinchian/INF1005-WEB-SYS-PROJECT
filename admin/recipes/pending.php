@@ -64,13 +64,13 @@
                         <td><?= htmlspecialchars($recipe['status']) ?></td>
                         <td><?= htmlspecialchars($recipe['created_at']) ?></td>
                         <td class="actions text-nowrap">
-                            <form action="../actions/recipes/admin-approve.php" method="POST">
+                            <form action="../../actions/recipes/admin-approve.php" method="POST">
                                 <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['recipe_id']) ?>">
                                 <input type="hidden" name="action" value="approve">
                                 <button type="submit" class="btn btn-primary w-100">Approve</button>
                             </form>
 
-                            <form class="mt-2" action="../actions/recipes/admin-approve.php" method="POST">
+                            <form class="mt-2" action="../../actions/recipes/admin-reject.php" method="POST">
                                 <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['recipe_id']) ?>">
                                 <input type="hidden" name="action" value="reject">
                                 <button type="submit" class="btn btn-danger w-100">Reject</button>

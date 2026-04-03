@@ -12,7 +12,7 @@
         if (empty($search_keywords)) {
             $stmt = "SELECT r.recipe_id, r.title, r.description,
                 r.prep_time_min, r.cook_time_min, r.servings,
-                r.calories, r.protein_g, r.carbs_g, r.fat_g,
+                r.calories, r.protein_g, r.carbs_g, r.fat_g, r.status, r.deleted_at,
                 u.username AS author FROM recipes r
                 JOIN users u ON r.submitted_by = u.user_id
                 LIMIT 100";
@@ -20,7 +20,7 @@
         } else {
             $stmt =  "SELECT r.recipe_id, r.title, r.description,
                 r.prep_time_min, r.cook_time_min, r.servings,
-                r.calories, r.protein_g, r.carbs_g, r.fat_g,
+                r.calories, r.protein_g, r.carbs_g, r.fat_g, r.status, r.deleted_at,
                 u.username AS author FROM recipes r
                 JOIN users u ON r.submitted_by = u.user_id
                 WHERE ";
@@ -65,6 +65,7 @@
             <?php if (!empty($result)): ?>
                 <?php foreach ($result as $recipe): ?>
                     <?php
+                        if($recipe['status'] !== 'approved' || !empty($recipe['deleted_at'])) continue;
                         $photo = getImageLink($recipe['title'], $recipe['recipe_id']);
                         $title = $recipe['title'] ?? 'Untitled Recipe';
                         $description = $recipe['description'] ?? '';
@@ -74,7 +75,7 @@
                         <div class="images">
                             <img class="rounded" src="<?= htmlspecialchars(getImageLink($recipe['title'], $recipe['recipe_id'])) ?>" alt="">
                         </div>
-                        <div class="information">    
+                        <div class="information flex-grow-1">    
                             <a href="recipe-detail.php?id=<?= htmlspecialchars($recipe['recipe_id']) ?>" class="text-decoration-none fs-2 mb-md-0 ms-md-1"><?= htmlspecialchars($recipe['title']) ?></a>
                             <p class="mb-md-0 ms-md-1">By <?= htmlspecialchars($recipe['author']) ?></p>
                             <div class="nutrition mb-1 d-flex flex-column flex-sm-row gap-1 gap-md-3 ms-0">
