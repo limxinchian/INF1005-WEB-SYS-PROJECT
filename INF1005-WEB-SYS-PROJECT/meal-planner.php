@@ -115,6 +115,7 @@
     <?php require_once 'includes/nav.php'; ?>
 
 <div class="container">
+    <h1 class="mt-4 mb-2">Meal Planner</h1>
     <div class="d-flex flex-column flex-lg-row gap-4">
         <div class="card p-3 mt-3 flex-grow-1 d-flex flex-column">
             <h2>Create New Plan</h2>
@@ -279,7 +280,7 @@
     <?php endif; ?>
     
     </div>
-</div>
+
     <?php require_once 'includes/footer.php'; ?>
 </main>
 </body>
