@@ -53,7 +53,7 @@
         $stmt->execute([$userId]);
         $upcomingMeals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 5. Top 3 fridge-matched recipes 
+       // 5. Top 3 fridge-matched recipes 
         $stmt = $pdo->prepare(
             "SELECT fm.recipe_id, fm.match_pct,
                     fm.matched_ingredients, fm.total_ingredients,
@@ -62,10 +62,8 @@
             FROM v_fridge_match fm
             JOIN recipes r ON r.recipe_id = fm.recipe_id
             WHERE fm.user_id = ?
-            GROUP BY fm.recipe_id, fm.match_pct, fm.matched_ingredients,
-                    fm.total_ingredients, r.title,
-                    r.calories, r.prep_time_min, r.cook_time_min
-            ORDER BY fm.match_pct DESC
+            AND fm.matched_ingredients > 0
+            ORDER BY fm.match_pct DESC, fm.matched_ingredients DESC
             LIMIT 3"
         );
         $stmt->execute([$userId]);
