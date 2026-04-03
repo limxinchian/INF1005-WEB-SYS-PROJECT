@@ -112,7 +112,7 @@
                                             <?php if (!empty($ing['allergens'])): ?>
                                                 <div class="mt-1">
                                                     <span class="badge bg-danger bg-opacity-75 text-white" style="font-size: 0.7em;">
-                                                        ⚠️ Contains: <?php echo htmlspecialchars($ing['allergens']); ?>
+                                                        &#9888; Contains: <?php echo htmlspecialchars($ing['allergens']); ?>
                                                     </span>
                                                 </div>
                                             <?php endif; ?>
