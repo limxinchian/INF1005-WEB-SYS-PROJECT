@@ -9,7 +9,7 @@ require_once '../config/db.php';
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Verify CSRF token
@@ -26,37 +26,37 @@ $dietary_tags     = isset($_POST['dietary_tags']) ? $_POST['dietary_tags'] : [];
 // Terms check
 if (!$terms) {
     setFlash('warning', 'You must agree to the Terms and Conditions.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Username checks
 if (empty($username)) {
     setFlash('warning', 'Username is required.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 if (strlen($username) < 3 || strlen($username) > 60) {
     setFlash('warning', 'Username must be between 3 and 60 characters.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
     setFlash('warning', 'Username can only contain letters, numbers, and underscores.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Email check
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     setFlash('warning', 'Please enter a valid email address.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Password checks
 if (strlen($password) < 8) {
     setFlash('warning', 'Password must be at least 8 characters.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 if ($password !== $confirm_password) {
     setFlash('warning', 'Passwords do not match.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Check duplicates
@@ -72,17 +72,17 @@ try {
 
     if ($check['username_taken'] > 0) {
         setFlash('warning', 'That username is already taken. Please choose another.');
-        redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+        redirect('../register.php');
     }
     if ($check['email_taken'] > 0) {
         setFlash('warning', 'An account with that email already exists. Try logging in.');
-        redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+        redirect('../register.php');
     }
 
 } catch (PDOException $e) {
     error_log('Register check error: ' . $e->getMessage());
     setFlash('danger', 'A server error occurred. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Hash password
@@ -118,7 +118,7 @@ try {
     $pdo->rollBack();
     error_log('Register insert error: ' . $e->getMessage());
     setFlash('danger', 'Registration failed. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/register.php');
+    redirect('../register.php');
 }
 
 // Send welcome email ONLY if vendor exists
@@ -129,7 +129,9 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
         require_once '../config/mailer.php';
         $mail         = createMailer();
         $safeUsername = htmlspecialchars($username);
-        $loginUrl     = 'http://localhost/INF1005-WEB-SYS-PROJECT/login.php';
+        $protocol     = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host         = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $loginUrl     = $protocol . '://' . $host . '/login.php';
 
         $mail->addAddress($email, $username);
         $mail->Subject = 'Welcome to MealMate!';
@@ -178,4 +180,4 @@ $_SESSION['role']     = 'member';
 
 // Redirect to dashboard
 setFlash('success', 'Welcome to MealMate, ' . htmlspecialchars($username) . '! Your account has been created.');
-redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+redirect('../dashboard.php');

@@ -33,7 +33,7 @@
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
 
-
+    <main class="container-fluid px-3 py-4">
     <h1 class="mt-3">All Users</h1>
 
     <?php if (isset($_GET['message'])): ?>
@@ -50,7 +50,7 @@
                     <th scope="col" class="fw-bold text-nowrap">Username</th>
                     <th scope="col" class="fw-bold text-nowrap">Email</th>
                     <th scope="col" class="fw-bold text-nowrap">Role</th>
-                    <th scope="col" class="fw-bold text-nowrap">Avatar URL</th>
+                    <th scope="col" class="fw-bold text-wrap">Avatar URL</th>
                     <th scope="col" class="fw-bold text-nowrap">Created At</th>
                     <th scope="col" class="fw-bold text-nowrap">Updated At</th>
                     <th scope="col" class="fw-bold text-nowrap">Actions</th>
@@ -63,7 +63,7 @@
                         <td class="text-nowrap"><?= htmlspecialchars($user['username']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($user['email']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($user['role']) ?></td>
-                        <td class="text-nowrap"><?= htmlspecialchars($user['avatar_url'] ?? '') ?></td>
+                        <td class="text-wrap"><?= htmlspecialchars($user['avatar_url'] ?? '') ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($user['created_at']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($user['updated_at']) ?></td>
                         <td class="actions">
@@ -79,6 +79,7 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
 </body>
 
 </html>

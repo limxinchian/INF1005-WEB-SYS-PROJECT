@@ -152,12 +152,12 @@
                 <?php if (!empty($upcomingMeals)): ?>
                     <div class="meal-list">
                         <?php foreach ($upcomingMeals as $meal): ?>
-                            <div class="meal-item">
+                            <div class="meal-item card p-md-3 mb-3">
                                 <div class="meal-meta">
                                     <h4><?= e($meal['title']) ?></h4>
-                                    <p><strong>Day:</strong> <?= e($meal['day_of_week']) ?></p>
-                                    <p><strong>Meal:</strong> <?= e($meal['meal_slot']) ?></p>
-                                    <p><strong>Calories:</strong> <?= e($meal['calories']) ?> kcal</p>
+                                    <p class="mb-0"><strong>Day:</strong> <?= e($meal['day_of_week']) ?></p>
+                                    <p class="mb-0"><strong>Meal:</strong> <?= e($meal['meal_slot']) ?></p>
+                                    <p class="mb-0"><strong>Calories:</strong> <?= e($meal['calories']) ?> kcal</p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -197,7 +197,7 @@
                 <?php if (!empty($topMatches)): ?>
                     <div class="recipe-list">
                         <?php foreach ($topMatches as $recipe): ?>
-                            <div class="recipe-item">
+                            <div class="recipe-item,card p-3" >
                                 <img
                                     src="<?= e(getImageLink($recipe['title'], $recipe['recipe_id'])) ?>"
                                     alt="<?= e($recipe['title']) ?>"

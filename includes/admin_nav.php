@@ -1,5 +1,5 @@
 <?php
-    $base = '/MealMate/INF1005-WEB-SYS-PROJECT';
+    $base = isset($basePath) ? $basePath : '.';
     $adminBase = $base . '/admin';
 ?>
 <nav class="navbar navbar-expand-lg navbar-light border-bottom border-primary border-5">

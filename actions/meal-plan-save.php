@@ -1,6 +1,6 @@
 <?php
-require_once '../config/session.php';
-require_once '../config/db.php';
+require_once __DIR__ . '/../config/session.php';
+require_once __DIR__ . '/../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -16,7 +16,7 @@ if (!isset($_SESSION['user_id'])) {
 $userId = (int) $_SESSION['user_id'];
 $mode   = trim($_POST['mode'] ?? '');
 
-// MODE 0 — Delete an existing meal plan
+// MODE 0 - Delete an existing meal plan
 if ($mode === 'delete_plan') {
     $planId = (int)($_POST['plan_id'] ?? 0);
 
@@ -67,7 +67,7 @@ if ($mode === 'delete_plan') {
     }
 }
 
-// MODE 1 — Create a new meal plan
+// MODE 1 - Create a new meal plan
 if ($mode === 'create_plan') {
     $planName  = trim($_POST['plan_name'] ?? 'My Meal Plan');
     $startDate = trim($_POST['start_date'] ?? '');
@@ -106,7 +106,7 @@ if ($mode === 'create_plan') {
     }
 }
 
-// MODE 2 — Save entries for an existing plan
+// MODE 2 - Save entries for an existing plan
 if ($mode !== 'save_entries') {
     header('Location: ../meal-planner.php?status=error');
     exit;

@@ -22,7 +22,7 @@
 
         // If user not found redirect to logout
         if (!$user) {
-            redirect('/INF1005-WEB-SYS-PROJECT/auth/logout.php');
+            redirect('./auth/logout.php');
         }
 
         // Fetch user's current dietary preferences
@@ -72,7 +72,7 @@
         <div class="container w-100">
             <div class="page-header mt-3 d-flex flex-row justify-content-between align-items-center">
                 <h1>Profile</h1>
-                <a href="edit_profile.php" class="btn btn-primary overpass-mono-normal">Edit Profile</a>
+                <a href="./edit_profile.php" class="btn btn-primary overpass-mono-normal">Edit Profile</a>
             </div>
             <div class="container d-flex flex-column flex-lg-row gap-4 mt-4">
                 <div class="col-auto">

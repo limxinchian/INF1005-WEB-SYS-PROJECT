@@ -8,16 +8,16 @@ require_once 'config/session.php';
 
 // Only log out if actually logged in
 if (!isLoggedIn()) {
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('./login.php');
 }
 
 // Save username for goodbye message before destroying session
 $username = currentUsername();
 
-// Step 1 — Clear all session variables
+// Step 1 - Clear all session variables
 $_SESSION = [];
 
-// Step 2 — Destroy the session cookie (PHPSESSID)
+// Step 2 - Destroy the session cookie (PHPSESSID)
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
     setcookie(
@@ -31,17 +31,17 @@ if (ini_get('session.use_cookies')) {
     );
 }
 
-// Step 3 — Destroy the session on the server
+// Step 3 - Destroy the session on the server
 session_destroy();
 
-// Step 4 — Clear the Remember Me cookie if it exists
+// Step 4 - Clear the Remember Me cookie if it exists
 if (isset($_COOKIE['remember_me'])) {
-    setcookie('remember_me', '', time() - 42000, '/INF1005-WEB-SYS-PROJECT/');
+    setcookie('remember_me', '', time() - 42000, './');
 }
 
-// Step 5 — Start a NEW session just to show the flash message
+// Step 5 - Start a NEW session just to show the flash message
 session_start();
 setFlash('success', 'You have been logged out successfully. See you soon, ' . htmlspecialchars($username) . '!');
 
-// Step 6 — Redirect to login page
-redirect('/INF1005-WEB-SYS-PROJECT/index.php');
+// Step 6 - Redirect to login page
+redirect('./index.php');

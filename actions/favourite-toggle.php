@@ -2,7 +2,7 @@
 /**
  * actions/favourite-toggle.php
  * ------------------------------------------------------------
- * AJAX-only endpoint — expects POST with recipe_id (int).
+ * AJAX-only endpoint - expects POST with recipe_id (int).
  * Checks if the recipe is already in favourite_recipes for
  * the current user:
  *   → if YES  : DELETE the row   (unfavourite)

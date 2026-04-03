@@ -26,6 +26,7 @@
 </head>
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
+    <main class="container-fluid px-3 py-4">
     <div class="container-fluid">
         <div class="mt-3 d-flex flex-row justify-content-between align-items-center">
             <h1>Dietary Tags</h1>
@@ -67,6 +68,7 @@
             </table>
         <?php endif; ?>
     </div>
+    </main>
     <?php include_once '../../includes/footer.php'; ?>
 </body>
 </html>

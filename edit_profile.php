@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <?php
+
         // ============================================================
         //  profile.php
         //  PURPOSE : View and update user profile
@@ -22,7 +23,7 @@
 
         // If user not found redirect to logout
         if (!$user) {
-            redirect('/INF1005-WEB-SYS-PROJECT/auth/logout.php');
+            redirect('../auth/logout.php');
         }
 
         // Fetch user's current dietary preferences
@@ -76,7 +77,7 @@
                 </div>
 
                 <div class="row g-4">
-                    <!-- LEFT COLUMN — Avatar + Stats -->
+                    <!-- LEFT COLUMN - Avatar + Stats -->
                     <div class="col-md-4">
 
                         <!-- Avatar Card -->
@@ -102,7 +103,7 @@
 
                     </div>
 
-                    <!-- RIGHT COLUMN — Edit Forms -->
+                    <!-- RIGHT COLUMN - Edit Forms -->
                     <div class="col-md-8">
 
                         <!-- Tabs -->
@@ -181,23 +182,7 @@
                                                 >
                                             </div>
 
-                                            <!-- Avatar Upload -->
-                                            <div class="mb-3">
-                                                <label for="avatar_file"
-                                                    class="form-label fw-semibold">
-                                                    Upload Avatar
-                                                    <span class="text-muted fw-normal">
-                                                        (optional — JPG, PNG, GIF, max 2 MB)
-                                                    </span>
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    class="form-control"
-                                                    id="avatar_file"
-                                                    name="avatar_file"
-                                                    accept="image/jpeg,image/png,image/gif"
-                                                >
-                                            </div>
+                                        
 
                                             <div class="d-grid">
                                                 <button type="submit"

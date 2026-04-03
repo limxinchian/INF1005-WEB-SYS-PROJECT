@@ -33,6 +33,7 @@
 
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
+    <main class="container-fluid px-3 py-4">
 
     <h1>All Recipes</h1>
 
@@ -59,7 +60,7 @@
             <tbody>
                 <?php foreach (array_reverse($recipes) as $recipe): ?>
                     <tr>
-                        <td scope="row" class="fw-bold text-nowrap"><?= htmlspecialchars($recipe['recipe_id']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($recipe['recipe_id']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($recipe['title']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($recipe['username']) ?></td>
                         <td class="text-nowrap"><?= htmlspecialchars($recipe['email']) ?></td>
@@ -79,6 +80,7 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
 </body>
 
 </html>

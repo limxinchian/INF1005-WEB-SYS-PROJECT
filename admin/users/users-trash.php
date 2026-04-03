@@ -29,7 +29,7 @@
 </head>
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
-
+    <main class="container-fluid px-3 py-4">
     <h1 class="mt-3">Deleted Users</h1>
 
     <?php if (isset($_GET['message'])): ?>
@@ -75,5 +75,6 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
 </body>
 </html>

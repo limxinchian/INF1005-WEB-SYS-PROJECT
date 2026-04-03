@@ -100,7 +100,7 @@ function showFlash(): void {
             {$message}
             <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
         </div>";
-        unset($_SESSION['flash']); // clear after showing — shows only once
+        unset($_SESSION['flash']); // clear after showing - shows only once
     }
 }
 
@@ -143,6 +143,6 @@ function verifyCsrfToken(): void {
         !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])
     ) {
         setFlash('danger', 'Invalid form submission. Please try again.');
-        redirect('/INF1005-WEB-SYS-PROJECT/index.php');
+        redirect('../index.php');
     }
 }

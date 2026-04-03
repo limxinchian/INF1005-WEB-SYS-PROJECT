@@ -69,6 +69,7 @@
 </head>
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
+    <main class="container-fluid px-3 py-4">
     <div class="container-fluid mt-3">
         <h1>Edit User</h1>
 
@@ -94,6 +95,7 @@
             </div>
         </form>
     </div>
+    </main>
     <?php include_once '../../includes/footer.php'; ?>
 </body>
 </html>

@@ -99,7 +99,6 @@
         $title = "MealMate - Meal Planner";
         include_once 'includes/header.php';
     ?>
-    <link rel="stylesheet" href="assets/css/meal-planner.css">
     <script>
         // do not remove, this is to make sure the dropdown works!!!
         const allRecipes = <?= json_encode(array_map(fn($r) => [
@@ -108,7 +107,8 @@
             'tags' => $r['tags'] ?? ''
         ], $recipes), JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     </script>
-    <script src="assets/js/meal_planner.js" defer></script>
+    <link rel="stylesheet" href="./assets/css/meal-planner.css">
+    <script src="./assets/js/meal_planner.js" defer></script>
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
@@ -187,7 +187,7 @@
     </div>
 
     <?php if ($activePlan): ?>
-        <div class="card mt-3 p-3">
+        <div class="card mt-3 p-3" style="overflow: visible;">
             <form action="actions/meal-plan-save.php" method="POST" id="plannerForm">
                 <input type="hidden" name="mode" value="save_entries">
                 <input type="hidden" name="plan_id" value="<?= (int)$activePlanId ?>">

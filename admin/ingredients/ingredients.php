@@ -27,7 +27,7 @@
 </head>
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
-
+    <main class="container-fluid px-3 py-4">
     <div class="mt-3 d-flex flex-row justify-content-between align-items-center">
         <h1>Ingredients</h1>
         <a href="ingredient-add.php" class="btn btn-primary">Add Ingredient</a>
@@ -54,7 +54,7 @@
             <tbody>
                 <?php foreach ($ingredients as $ingredient): ?>
                     <tr>
-                        <td scope="row" class="fw-bold text-nowrap"><?= htmlspecialchars($ingredient['ingredient_id']) ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($ingredient['ingredient_id']) ?></td>
                         <td  class="text-nowrap"><?= htmlspecialchars($ingredient['ingredient_name']) ?></td>
                         <td  class="text-nowrap"><?= htmlspecialchars(ucwords($ingredient['ingredient_name'])) ?></td>
                         <td  class="text-nowrap"><?= htmlspecialchars($ingredient['created_at']) ?></td>
@@ -72,6 +72,7 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
     <?php include_once '../../includes/footer.php'; ?>
 </body>
 </html>

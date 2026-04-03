@@ -9,7 +9,7 @@ require_once '../config/db.php';
 
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgotpassword.php');
 }
 
 verifyCsrfToken();
@@ -19,10 +19,10 @@ $email = trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
 // Validate email
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     setFlash('warning', 'Please enter a valid email address.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgotpassword.php');
 }
 
-// Always show same message — never reveal if email exists
+// Always show same message - never reveal if email exists
 $genericMessage = 'If that email is registered, a reset link has been sent. Please check your inbox.';
 
 // Look up user
@@ -39,20 +39,20 @@ try {
 } catch (PDOException $e) {
     error_log('Forgot password lookup error: ' . $e->getMessage());
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgotpassword.php');
 }
 
-// Email not found — show generic message anyway
+// Email not found - show generic message anyway
 if (!$user) {
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgotpassword.php');
 }
 
 // Generate secure token and expiry (1 hour from now)
 $resetToken  = bin2hex(random_bytes(32));
 $tokenExpiry = date('Y-m-d H:i:s', time() + 3600);
 
-// Store token directly in users table — no new table needed
+// Store token directly in users table - no new table needed
 try {
     $stmt = $pdo->prepare("
         UPDATE users
@@ -65,7 +65,7 @@ try {
 } catch (PDOException $e) {
     error_log('Reset token store error: ' . $e->getMessage());
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgotpassword.php');
 }
 
 error_log('Token stored for user_id: ' . $user['user_id']);
@@ -85,7 +85,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
         $mail = createMailer();
         $mail->addAddress($user['email'], $user['username']);
-        $mail->Subject = 'MealMate — Password Reset Request';
+        $mail->Subject = 'MealMate - Password Reset Request';
         $mail->isHTML(true);
 
         $mail->Body = '
@@ -140,8 +140,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
         error_log('Reset email send error: ' . $e->getMessage());
     }
 } else {
-    error_log('Composer vendor not found — reset email skipped.');
+    error_log('Composer vendor not found - reset email skipped.');
 }
 
 setFlash('info', $genericMessage);
-redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+redirect('../forgotpassword.php');

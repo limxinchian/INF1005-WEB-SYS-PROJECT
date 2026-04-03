@@ -134,7 +134,8 @@
                 </div>
             <?php else: ?>
                 <?php foreach ($favourites as $recipe): ?>
-                    <div class="card m-3 p-3 d-flex flex-column flex-lg-row gap-4 align-items-center fav-card" data-title="<?= htmlspecialchars(strtolower($recipe['title'])) ?>">
+                    <div class="card m-3 p-3 d-flex flex-column flex-lg-row gap-4 align-items-center fav-card position-relative" data-title="<?= htmlspecialchars(strtolower($recipe['title'])) ?>">
+                        <button type="button" class="btn btn-danger remove-favourite-btn position-absolute top-0 end-0 me-3 mt-3" data-recipe-id="<?= (int)$recipe['recipe_id'] ?>">Remove</button>
                         <div class="images">
                             <img class="rounded" src="<?= htmlspecialchars(getImageLink($recipe['title'], $recipe['recipe_id'])) ?>" alt="">
                         </div>
@@ -177,9 +178,7 @@
                                 <p><?= htmlspecialchars($recipe['description']) ?></p>
                             </div>
                         </div>
-                        <div class="align-self-start">
-                            <button type="button" class="btn btn-danger remove-favourite-btn" data-recipe-id="<?= (int)$recipe['recipe_id'] ?>">Remove</button>
-                        </div>
+
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>

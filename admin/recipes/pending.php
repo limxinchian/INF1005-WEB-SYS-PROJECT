@@ -31,6 +31,7 @@
 </head>
 <body>
     <?php include_once '../../includes/admin_nav.php'; ?>
+    <main class="container-fluid px-3 py-4">
 
     <h1 class="my-3">Pending Recipes</h1>
 
@@ -40,7 +41,7 @@
 
     <?php if (empty($pendingRecipes)): ?>
         <p>No pending recipes found.</p>
-        <p><a href="dashboard.php">Return to Admin Dashboard</a></p>
+        <p><a href="../dashboard.php">Return to Admin Dashboard</a></p>
     <?php else: ?>
         <table class="table table-striped">
             <thead>
@@ -81,6 +82,7 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
     
     <?php include_once '../../includes/footer.php'; ?>
 </body>

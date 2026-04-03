@@ -33,7 +33,8 @@
 </head>
 
 <body>
-    <?php include_once '../../includes/admin_nav.php'; ?>
+    <?php include_once '../../includes/admin_nav.php'; ?>\
+    <main class="container-fluid px-3 py-4">
 
     <h1>Deleted Recipes</h1>
 
@@ -82,6 +83,7 @@
             </tbody>
         </table>
     <?php endif; ?>
+    </main>
     <?php include_once '../../includes/footer.php'; ?>
 </body>
 
