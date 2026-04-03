@@ -9,7 +9,7 @@ require_once '../config/db.php';
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('./login.php');
 }
 
 // Verify CSRF token
@@ -22,13 +22,13 @@ $password = trim(filter_input(INPUT_POST, 'password', FILTER_DEFAULT));
 // Validate not empty
 if (empty($email) || empty($password)) {
     setFlash('warning', 'Please enter both your email and password.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email ?? ''));
+    redirect('./login.php?email=' . urlencode($email ?? ''));
 }
 
 // Validate email format
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     setFlash('warning', 'Please enter a valid email address.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+    redirect('./login.php?email=' . urlencode($email));
 }
 
 // ── Verify reCAPTCHA ──────────────────────────────────────
@@ -39,7 +39,7 @@ $recaptchaResponse = trim($_POST['g-recaptcha-response'] ?? '');
 // Check reCAPTCHA response exists
 if (empty($recaptchaResponse)) {
     setFlash('warning', 'Please complete the reCAPTCHA verification.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+    redirect('./login.php?email=' . urlencode($email));
 }
 
 // Verify with Google API
@@ -53,7 +53,7 @@ $recaptchaResult = json_decode($recaptchaRaw, true);
 
 if (!isset($recaptchaResult['success']) || $recaptchaResult['success'] !== true) {
     setFlash('warning', 'reCAPTCHA verification failed. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+    redirect('./login.php?email=' . urlencode($email));
 }
 // ── End reCAPTCHA Verification ────────────────────────────
 
@@ -71,14 +71,14 @@ try {
 } catch (PDOException $e) {
     error_log('Login DB error: ' . $e->getMessage());
     setFlash('danger', 'A server error occurred. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+    redirect('./login.php?email=' . urlencode($email));
 }
 
 // Verify password
 // Same message for wrong email or wrong password — security best practice
 if (!$user || !password_verify($password, $user['password_hash'])) {
     setFlash('danger', 'Incorrect email or password. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php?email=' . urlencode($email));
+    redirect('./login.php?email=' . urlencode($email));
 }
 
 // Regenerate session ID to prevent session fixation attack
@@ -99,7 +99,7 @@ if (!empty($_POST['remember'])) {
         'remember_me',
         $cookieValue,
         $cookieExpiry,
-        '/INF1005-WEB-SYS-PROJECT/',
+        './',
         '',
         false,
         true
@@ -111,7 +111,7 @@ setFlash('success', 'Welcome back, ' . htmlspecialchars($user['username']) . '!'
 
 // Redirect based on role
 if ($user['role'] === 'admin') {
-    redirect('/INF1005-WEB-SYS-PROJECT/admin/dashboard.php');
+    redirect('./admin/dashboard.php');
 } else {
-    redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+    redirect('./dashboard.php');
 }

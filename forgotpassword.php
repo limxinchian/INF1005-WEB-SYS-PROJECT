@@ -12,7 +12,7 @@
 
         // If already logged in redirect away
         if (isLoggedIn()) {
-            redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+            redirect('./dashboard.php');
         }
 
         $token = generateCsrfToken();
@@ -20,14 +20,14 @@
         $title = 'MealMate - Forgot Password';
         require_once 'includes/header.php';
         ?>
-        <script src="/MealMate/INF1005-WEB-SYS-PROJECT/assets/js/forgotpassword.js" defer></script>
+        <script src="./assets/js/forgotpassword.js" defer></script>
 </head>
 <body>
     <?php require_once 'includes/nav.php'; ?>
     <h1 class="text-center my-5">Reset your Password</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
         <form method="POST"
-                action="auth/forgot-password-process.php"
+                action="./auth/forgot-password-process.php"
                 id="forgotForm"
                 novalidate>
 

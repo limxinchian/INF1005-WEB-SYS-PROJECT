@@ -13,9 +13,9 @@
         // If already logged in, redirect away
         if (isLoggedIn()) {
             if (isAdmin()) {
-                redirect('/INF1005-WEB-SYS-PROJECT/admin/dashboard.php');
+                redirect('./admin/dashboard.php');
             } else {
-                redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+                redirect('./dashboard.php');
             }
         }
 

@@ -9,7 +9,7 @@ require_once '../config/db.php';
 
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgot-password.php');
 }
 
 verifyCsrfToken();
@@ -19,7 +19,7 @@ $email = trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
 // Validate email
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     setFlash('warning', 'Please enter a valid email address.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgot-password.php');
 }
 
 // Always show same message — never reveal if email exists
@@ -39,13 +39,13 @@ try {
 } catch (PDOException $e) {
     error_log('Forgot password lookup error: ' . $e->getMessage());
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgot-password.php');
 }
 
 // Email not found — show generic message anyway
 if (!$user) {
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgot-password.php');
 }
 
 // Generate secure token and expiry (1 hour from now)
@@ -65,7 +65,7 @@ try {
 } catch (PDOException $e) {
     error_log('Reset token store error: ' . $e->getMessage());
     setFlash('info', $genericMessage);
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('../forgot-password.php');
 }
 
 error_log('Token stored for user_id: ' . $user['user_id']);
@@ -144,4 +144,4 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 setFlash('info', $genericMessage);
-redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+redirect('../forgot-password.php');

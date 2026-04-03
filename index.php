@@ -5,7 +5,7 @@
         require_once __DIR__ . '/config/session.php';
 
         if (isLoggedIn()) {
-            redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+            redirect('dashboard.php');
         }
         include_once 'includes/header.php';
     ?>    
@@ -190,7 +190,7 @@
     <section class="about_us home_info d-flex flex-column align-items-center justify-content-center text-center gap-3">
         <h2 class="text-center mt-4">About Us</h2>
         <p class="about_us text-center">MealMate was born from a simple idea: everyone deserves to enjoy home-cooked meals without the stress of planning. We bring together a passionate community of home cooks and professional chefs who share their favourite recipes from around the world. Our platform helps you discover new dishes, plan your weekly meals, and make the most of the ingredients already in your kitchen. Whether you're a beginner learning the basics or a seasoned cook exploring new cuisines, MealMate is designed to make your time in the kitchen easier and more enjoyable.</p>
-        <a class="btn btn-secondary" href="#"><span class="text-white text-decoration-none overpass-mono-normal">Contact Us</span></a> 
+        <a class="btn btn-secondary" href="about_us.php"><span class="text-white text-decoration-none overpass-mono-normal">About Us</span></a> 
     </section>
 
     <?php include 'includes/footer.php' ?>

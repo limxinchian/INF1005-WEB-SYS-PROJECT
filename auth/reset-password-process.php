@@ -9,7 +9,7 @@ require_once '../config/db.php';
 
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 verifyCsrfToken();
@@ -21,23 +21,23 @@ $confirmPassword = trim($_POST['confirm_password'] ?? '');
 // Validate token present
 if (empty($token)) {
     setFlash('danger', 'Invalid reset link. Please request a new one.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Validate passwords
 if (empty($newPassword) || empty($confirmPassword)) {
     setFlash('warning', 'Please fill in both password fields.');
-    redirect('/INF1005-WEB-SYS-PROJECT/reset-password.php?token=' . urlencode($token));
+    redirect('./reset-password.php?token=' . urlencode($token));
 }
 
 if (strlen($newPassword) < 8) {
     setFlash('warning', 'Password must be at least 8 characters.');
-    redirect('/INF1005-WEB-SYS-PROJECT/reset-password.php?token=' . urlencode($token));
+    redirect('./reset-password.php?token=' . urlencode($token));
 }
 
 if ($newPassword !== $confirmPassword) {
     setFlash('warning', 'Passwords do not match.');
-    redirect('/INF1005-WEB-SYS-PROJECT/reset-password.php?token=' . urlencode($token));
+    redirect('./reset-password.php?token=' . urlencode($token));
 }
 
 // Look up token in users table
@@ -54,13 +54,13 @@ try {
 } catch (PDOException $e) {
     error_log('Reset process lookup error: ' . $e->getMessage());
     setFlash('danger', 'A server error occurred. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Token not found
 if (!$user) {
     setFlash('danger', 'Invalid reset link. Please request a new one.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Token expired
@@ -75,7 +75,7 @@ if (empty($user['reset_token_expiry']) || $expiryTs === false || $expiryTs < tim
     ")->execute([$user['user_id']]);
 
     setFlash('warning', 'This reset link has expired. Please request a new one.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Hash new password
@@ -95,9 +95,9 @@ try {
 } catch (PDOException $e) {
     error_log('Password update error: ' . $e->getMessage());
     setFlash('danger', 'Failed to reset password. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/reset-password.php?token=' . urlencode($token));
+    redirect('./reset-password.php?token=' . urlencode($token));
 }
 
 // Success
 setFlash('success', 'Password reset successfully! Please log in with your new password.');
-redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+redirect('./login.php');

@@ -9,7 +9,7 @@ require_once 'config/db.php';
 
 // If already logged in redirect away
 if (isLoggedIn()) {
-    redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+    redirect('./dashboard.php');
 }
 
 $token = trim($_GET['token'] ?? '');
@@ -17,7 +17,7 @@ $token = trim($_GET['token'] ?? '');
 // No token
 if (empty($token)) {
     setFlash('danger', 'Invalid or missing reset link.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Look up token in users table
@@ -35,13 +35,13 @@ try {
 } catch (PDOException $e) {
     error_log('Reset token lookup error: ' . $e->getMessage());
     setFlash('danger', 'A server error occurred. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Token not found
 if (!$user) {
     setFlash('danger', 'This reset link is invalid. Please request a new one.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Token expired
@@ -56,7 +56,7 @@ if (empty($user['reset_token_expiry']) || $expiryTs === false || $expiryTs < tim
     ")->execute([$user['user_id']]);
 
     setFlash('warning', 'This reset link has expired. Please request a new one.');
-    redirect('/INF1005-WEB-SYS-PROJECT/forgot-password.php');
+    redirect('./forgot-password.php');
 }
 
 // Token is valid — show reset form

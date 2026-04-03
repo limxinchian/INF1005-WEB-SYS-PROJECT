@@ -1,8 +1,11 @@
-<?php 
-    $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/'); 
-    $root = realpath(__DIR__ . '/..');
-    $docRoot = realpath($_SERVER['DOCUMENT_ROOT']);
-    $basePath = '/' . ltrim(str_replace('\\', '/', substr($root, strlen($docRoot))), '/');
+<?php
+if (!isset($basePath)) {
+    $_projectRoot = realpath(__DIR__ . '/..');
+    $_callingDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+    $_relPath = ltrim(str_replace('\\', '/', substr($_callingDir, strlen($_projectRoot))), '/');
+    $_depth = $_relPath === '' ? 0 : substr_count($_relPath, '/') + 1;
+    $basePath = $_depth > 0 ? implode('/', array_fill(0, $_depth, '..')) : '.';
+}
 ?>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

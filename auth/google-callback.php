@@ -7,31 +7,31 @@ $env = parse_ini_file(__DIR__ . '/../.env');
 
 if (isset($_GET['error'])) {
     setFlash('danger', 'Google login was cancelled or failed.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('../login.php');
 }
 
 if (!isset($_GET['code'])) {
     setFlash('danger', 'No authorization code received.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('../login.php');
 }
 
 $client = new Google\Client();
 $client->setClientId($env['GOOGLE_CLIENT_ID']);
 $client->setClientSecret($env['GOOGLE_CLIENT_SECRET']);
-$client->setRedirectUri('http://localhost/INF1005-WEB-SYS-PROJECT/auth/google-callback.php');
+$client->setRedirectUri('https://mealmate.live/auth/google-callback.php');
 
 try {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
 } catch (Exception $e) {
     error_log('Google OAuth error: ' . $e->getMessage());
     setFlash('danger', 'Failed to authenticate with Google. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('../login.php');
 }
 
 if (isset($token['error'])) {
     error_log('Google OAuth token error: ' . $token['error']);
     setFlash('danger', 'Failed to authenticate with Google. Please try again.');
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('../login.php');
 }
 
 $client->setAccessToken($token);
@@ -45,7 +45,7 @@ $avatar = $googleUser->picture ?? null;
 $oauth_id = $googleUser->id;
 
 if (empty($email)) {
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('../login.php');
 }
 
 $stmt = $pdo->prepare('SELECT * FROM users WHERE oauth_id = ? AND deleted_at IS NULL');
@@ -58,7 +58,7 @@ if (!$user) {
     $existingEmailUser = $stmt->fetch();
     if ($existingEmailUser) {
         setFlash('warning', 'An account with that email already exists. Please log in using your email and password.');
-        redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+        redirect('../login.php');
     }else{
         $username = preg_replace('/[^a-zA-Z0-9_]/', '_', $name);
 
@@ -84,9 +84,9 @@ if (!$user) {
 
 
     if ($_SESSION['role'] === 'admin') {
-        redirect('/INF1005-WEB-SYS-PROJECT/admin/dashboard.php');
+        redirect('/../admin/dashboard.php');
     } else {
-        redirect('/INF1005-WEB-SYS-PROJECT/index.php');
+        redirect('/../index.php');
     }
 
 

@@ -17,9 +17,9 @@
         // If already logged in redirect away
         if (isLoggedIn()) {
             if (isAdmin()) {
-                redirect('/INF1005-WEB-SYS-PROJECT/admin/dashboard.php');
+                redirect('./admin/dashboard.php');
             } else {
-                redirect('/INF1005-WEB-SYS-PROJECT/dashboard.php');
+                redirect('./dashboard.php');
             }
         }
 
@@ -43,7 +43,7 @@
     <?php require_once 'includes/nav.php'; ?>
     <h1 class="text-center my-5">Login to MealMate</h1>
     <div class="container d-flex justify-content-center align-items-center flex-column gap-4">
-        <form method="POST" action="auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
+        <form method="POST" action="./auth/login-process.php" id="loginForm" class="w-70 px-lg-7 mx-lg-5 mx-sm-0" novalidate>
             <!-- CSRF Token -->
             <input type="hidden"
                     name="csrf_token"
@@ -153,7 +153,7 @@
 
             $client->setClientId($env['GOOGLE_CLIENT_ID']);
             $client->setClientSecret($env['GOOGLE_CLIENT_SECRET']);
-            $client->setRedirectUri("http://localhost/INF1005-WEB-SYS-PROJECT/auth/google-callback.php");
+            $client->setRedirectUri("https://mealmate.live/auth/google-callback.php");
             $client->addScope("email");
             $client->addScope("profile");
 

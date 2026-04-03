@@ -3,11 +3,11 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+    redirect('./edit_profile.php');
 }
 
 if (!isLoggedIn()) {
-    redirect('/INF1005-WEB-SYS-PROJECT/login.php');
+    redirect('./login.php');
 }
 
 verifyCsrfToken();
@@ -21,17 +21,17 @@ if ($action === 'update_info') {
 
     if ($username === '' || $email === '') {
         setFlash('danger', 'Username and email are required.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         setFlash('danger', 'Please enter a valid email address.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     if (mb_strlen($username) < 3 || mb_strlen($username) > 60) {
         setFlash('danger', 'Username must be between 3 and 60 characters.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     // Check for duplicate email (exclude current user)
@@ -39,7 +39,7 @@ if ($action === 'update_info') {
     $dup->execute([$email, $userId]);
     if ($dup->fetch()) {
         setFlash('danger', 'That email is already in use by another account.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     // Check for duplicate username (exclude current user)
@@ -47,7 +47,7 @@ if ($action === 'update_info') {
     $dup2->execute([$username, $userId]);
     if ($dup2->fetch()) {
         setFlash('danger', 'That username is already taken.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] == UPLOAD_ERR_OK) {
@@ -61,12 +61,12 @@ if ($action === 'update_info') {
 
         if (!in_array($mimeType, $allowed, true)) {
             setFlash('danger', 'Avatar must be a JPG, PNG, or GIF image.');
-            redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+            redirect('./edit_profile.php');
         }
 
         if ($file['size'] > $maxSize) {
             setFlash('danger', 'Avatar file must be under 10 MB.');
-            redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+            redirect('./edit_profile.php');
         }
 
         // Build safe filename
@@ -87,10 +87,10 @@ if ($action === 'update_info') {
 
         if (!move_uploaded_file($file['tmp_name'], $destPath)) {
             setFlash('danger', 'Failed to save avatar file. Please try again.');
-            redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+            redirect('./edit_profile.php');
         }
 
-        $avatarUrl = '/INF1005-WEB-SYS-PROJECT/assets/images/uploads/avatars/' . $newName;
+        $avatarUrl = './assets/images/uploads/avatars/' . $newName;
     }else{
         // If no new avatar uploaded, keep existing URL
         $stmt = $pdo->prepare("SELECT avatar_url FROM users WHERE user_id = ?");
@@ -112,7 +112,7 @@ if ($action === 'update_info') {
     $_SESSION['username'] = $username;
 
     setFlash('success', 'Profile updated successfully.');
-    redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+    redirect('./edit_profile.php');
 }
 
 // ============================================================
@@ -126,17 +126,17 @@ if ($action === 'change_password') {
 
     if ($currentPwd === '' || $newPwd === '' || $confirmPwd === '') {
         setFlash('danger', 'All password fields are required.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     if ($newPwd !== $confirmPwd) {
         setFlash('danger', 'New passwords do not match.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     if (mb_strlen($newPwd) < 8) {
         setFlash('danger', 'New password must be at least 8 characters.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     // Fetch current hash
@@ -146,7 +146,7 @@ if ($action === 'change_password') {
 
     if (!password_verify($currentPwd, $hash)) {
         setFlash('danger', 'Current password is incorrect.');
-        redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+        redirect('./edit_profile.php');
     }
 
     // Update to new password
@@ -155,7 +155,7 @@ if ($action === 'change_password') {
     $update->execute([$newHash, $userId]);
 
     setFlash('success', 'Password changed successfully.');
-    redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+    redirect('./edit_profile.php');
 }
 
 // ============================================================
@@ -199,9 +199,9 @@ if ($action === 'update_dietary') {
     $pdo->commit();
 
     setFlash('success', 'Dietary preferences saved.');
-    redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+    redirect('./edit_profile.php');
 }
 
 // Unknown action
 setFlash('danger', 'Invalid action.');
-redirect('/INF1005-WEB-SYS-PROJECT/edit_profile.php');
+redirect('./edit_profile.php');

@@ -22,7 +22,7 @@
 
         // If user not found redirect to logout
         if (!$user) {
-            redirect('/INF1005-WEB-SYS-PROJECT/auth/logout.php');
+            redirect('./auth/logout.php');
         }
 
         // Fetch user's current dietary preferences
