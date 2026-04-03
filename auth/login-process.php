@@ -111,7 +111,7 @@ setFlash('success', 'Welcome back, ' . htmlspecialchars($user['username']) . '!'
 
 // Redirect based on role
 if ($user['role'] === 'admin') {
-    redirect('./admin/dashboard.php');
+    redirect('../admin/dashboard.php');
 } else {
-    redirect('./dashboard.php');
+    redirect('../dashboard.php');
 }
