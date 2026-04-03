@@ -41,5 +41,5 @@ function loadEnv(string $filePath): void {
     }
 }
 
-// Load the .env file — __DIR__ goes up one level from config/ to project root
+// Load the .env file - __DIR__ goes up one level from config/ to project root
 loadEnv(__DIR__ . '/../.env');

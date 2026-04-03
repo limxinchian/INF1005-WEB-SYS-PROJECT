@@ -59,7 +59,7 @@ if (empty($user['reset_token_expiry']) || $expiryTs === false || $expiryTs < tim
     redirect('./forgot-password.php');
 }
 
-// Token is valid — show reset form
+// Token is valid - show reset form
 $safeUsername = htmlspecialchars($user['username']);
 $csrfToken    = generateCsrfToken();
 

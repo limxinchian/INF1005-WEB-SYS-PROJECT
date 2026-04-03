@@ -1,120 +1,47 @@
-const recipeModal = document.getElementById("recipeModal");
-const recipeSearchInput = document.getElementById("recipeSearchInput");
-const recipeOptions = document.querySelectorAll(".recipe-option");
-const openPickerButtons = document.querySelectorAll(".open-picker-btn");
-const clearButtons = document.querySelectorAll(".clear-cell-btn");
-const closeModalBtn = document.getElementById("closeModalBtn");
-const deletePlanBtn = document.getElementById("deletePlanBtn");
-const deletePlanForm = document.getElementById("deletePlanForm");
-
-let activeMealCell = null;
-
-function openModalForCell(cell) {
-  activeMealCell = cell;
-  recipeModal.classList.add("show");
-  recipeSearchInput.value = "";
-  filterRecipeOptions();
-  recipeSearchInput.focus();
-}
-
-function closeModal() {
-  recipeModal.classList.remove("show");
-  activeMealCell = null;
-}
-
-function filterRecipeOptions() {
-  const term = recipeSearchInput.value.trim().toLowerCase();
-  recipeOptions.forEach((option) => {
-    const text = option.dataset.search || "";
-    option.style.display = text.includes(term) ? "" : "none";
-  });
-}
-
-openPickerButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    const cell = this.closest(".meal-cell");
-    openModalForCell(cell);
-  });
-});
-
-clearButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    const cell = this.closest(".meal-cell");
-    cell.querySelector(".recipe-id-input").value = "";
-    cell.querySelector(".recipe-title-input").value = "";
-
-    cell.querySelector(".recipe-display").outerHTML =
-      '<div class="meal-placeholder recipe-display">No recipe selected</div>';
-  });
-});
-
-document.querySelectorAll(".select-recipe-btn").forEach((button) => {
-  button.addEventListener("click", function () {
-    if (!activeMealCell) return;
-
-    const option = this.closest(".recipe-option");
-    const recipeId = option.dataset.id;
-    const recipeTitle = option.dataset.title;
-
-    activeMealCell.querySelector(".recipe-id-input").value = recipeId;
-    activeMealCell.querySelector(".recipe-title-input").value = recipeTitle;
-
-    activeMealCell.querySelector(".recipe-display").outerHTML =
-      `<div class="selected-recipe recipe-display">
-                    <strong>${recipeTitle}</strong>
-                </div>`;
-
-    closeModal();
-  });
-});
-
-if (recipeSearchInput)
-  recipeSearchInput.addEventListener("input", filterRecipeOptions);
-if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
-
-if (recipeModal) {
-  recipeModal.addEventListener("click", function (e) {
-    if (e.target === recipeModal) {
-      closeModal();
-    }
-  });
-}
-
-document.addEventListener("keydown", function (e) {
-  if (
-    e.key === "Escape" &&
-    recipeModal &&
-    recipeModal.classList.contains("show")
-  ) {
-    closeModal();
+// ─── Delete plan ─────────────────────────────────────────────────
+(function () {
+  var deletePlanBtn = document.getElementById("deletePlanBtn");
+  var deletePlanForm = document.getElementById("deletePlanForm");
+  if (deletePlanBtn && deletePlanForm) {
+    deletePlanBtn.addEventListener("click", function () {
+      if (
+        confirm(
+          "Are you sure you want to delete this meal plan? This cannot be undone.",
+        )
+      ) {
+        deletePlanForm.submit();
+      }
+    });
   }
-});
+})();
 
-if (deletePlanBtn && deletePlanForm) {
-  deletePlanBtn.addEventListener("click", function () {
-    const confirmed = confirm(
-      "Are you sure you want to delete this meal plan? This cannot be undone.",
-    );
-    if (confirmed) {
-      deletePlanForm.submit();
-    }
+// ─── Clear cell buttons ─────────────────────────────────────────
+(function () {
+  document.querySelectorAll(".clear-cell-btn").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var cell = this.closest(".meal-cell");
+      cell.querySelector(".recipe-id-input").value = "";
+      cell.querySelector(".recipe-title-input").value = "";
+      cell.querySelector(".recipe-display").outerHTML =
+        '<div class="meal-placeholder recipe-display">No recipe selected</div>';
+    });
   });
-}
+})();
 
-document.addEventListener("DOMContentLoaded", function () {
-  const inner = document.getElementById("planCarouselInner");
-  const prev = document.getElementById("planCarouselPrev");
-  const next = document.getElementById("planCarouselNext");
+// ─── Plan carousel ──────────────────────────────────────────────
+(function () {
+  var inner = document.getElementById("planCarouselInner");
+  var prev = document.getElementById("planCarouselPrev");
+  var next = document.getElementById("planCarouselNext");
   if (!inner) return;
 
-  const slides = inner.querySelectorAll(".plan-carousel-slide");
+  var slides = inner.querySelectorAll(".plan-carousel-slide");
   if (slides.length <= 1) return;
 
-  const slideHeight = 120;
-  let current = 0;
+  var slideHeight = 120;
+  var current = 0;
 
-  // Start carousel at the active plan's slide
-  for (let i = 0; i < slides.length; i++) {
+  for (var i = 0; i < slides.length; i++) {
     if (slides[i].querySelector(".plan-item.active")) {
       current = i;
       break;
@@ -157,35 +84,36 @@ document.addEventListener("DOMContentLoaded", function () {
       { passive: false },
     );
   }
-});
+})();
 
 // ─── Autocomplete recipe search ─────────────────────────────────
-document.addEventListener("DOMContentLoaded", function () {
-  const recipes = typeof allRecipes !== "undefined" ? allRecipes : [];
-  let activeIndex = -1;
+(function () {
+  var recipes = typeof allRecipes !== "undefined" ? allRecipes : [];
+  var activeIndex = -1;
 
   document.addEventListener("input", function (e) {
     if (!e.target.classList.contains("recipe-search-input")) return;
-    const input = e.target;
-    const dropdown = input
-      .closest(".autocomplete-wrapper")
-      .querySelector(".autocomplete-dropdown");
-    const term = input.value.trim().toLowerCase();
+    var input = e.target;
+    var wrapper = input.closest(".autocomplete-wrapper");
+    if (!wrapper) return;
+    var dropdown = wrapper.querySelector(".autocomplete-dropdown");
+    if (!dropdown) return;
+    var term = input.value.trim().toLowerCase();
     activeIndex = -1;
 
     if (term.length === 0) {
-      dropdown.style.display = "none";
+      dropdown.style.cssText = "display: none !important;";
       dropdown.innerHTML = "";
       return;
     }
 
-    const matches = recipes.filter(function (r) {
-      return r.title.toLowerCase().includes(term);
+    var matches = recipes.filter(function (r) {
+      return r.title.toLowerCase().indexOf(term) !== -1;
     });
 
     if (matches.length === 0) {
       dropdown.innerHTML = '<div class="ac-no-results">No recipes found</div>';
-      dropdown.style.display = "block";
+      dropdown.style.cssText = "display: block !important;";
       return;
     }
 
@@ -208,16 +136,16 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       })
       .join("");
-    dropdown.style.display = "block";
+    dropdown.style.cssText = "display: block !important;";
   });
 
-  // Keyboard navigation
   document.addEventListener("keydown", function (e) {
     if (!e.target.classList.contains("recipe-search-input")) return;
-    const dropdown = e.target
-      .closest(".autocomplete-wrapper")
-      .querySelector(".autocomplete-dropdown");
-    const items = dropdown.querySelectorAll(".ac-item");
+    var wrapper = e.target.closest(".autocomplete-wrapper");
+    if (!wrapper) return;
+    var dropdown = wrapper.querySelector(".autocomplete-dropdown");
+    if (!dropdown) return;
+    var items = dropdown.querySelectorAll(".ac-item");
     if (items.length === 0) return;
 
     if (e.key === "ArrowDown") {
@@ -234,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         selectRecipe(items[activeIndex]);
       }
     } else if (e.key === "Escape") {
-      dropdown.style.display = "none";
+      dropdown.style.cssText = "display: none !important;";
       activeIndex = -1;
     }
   });
@@ -248,44 +176,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Click on dropdown item
   document.addEventListener("click", function (e) {
-    const item = e.target.closest(".ac-item");
+    var item = e.target.closest(".ac-item");
     if (item) {
       selectRecipe(item);
       return;
     }
-    // Close all dropdowns when clicking outside
     document.querySelectorAll(".autocomplete-dropdown").forEach(function (dd) {
       if (
         !dd.contains(e.target) &&
         !e.target.classList.contains("recipe-search-input")
       ) {
-        dd.style.display = "none";
+        dd.style.cssText = "display: none !important;";
       }
     });
   });
 
   function selectRecipe(item) {
-    const recipeId = item.dataset.id;
-    const recipeTitle = item.dataset.title;
-    const cell = item.closest(".meal-cell");
+    var recipeId = item.dataset.id;
+    var recipeTitle = item.dataset.title;
+    var cell = item.closest(".meal-cell");
 
     cell.querySelector(".recipe-id-input").value = recipeId;
     cell.querySelector(".recipe-title-input").value = recipeTitle;
-
     cell.querySelector(".recipe-display").outerHTML =
       '<div class="selected-recipe recipe-display"><strong>' +
       recipeTitle.replace(/</g, "&lt;") +
       "</strong></div>";
 
-    const input = cell.querySelector(".recipe-search-input");
+    var input = cell.querySelector(".recipe-search-input");
     input.value = "";
-    const dropdown = input
-      .closest(".autocomplete-wrapper")
-      .querySelector(".autocomplete-dropdown");
-    dropdown.style.display = "none";
+    var wrapper = input.closest(".autocomplete-wrapper");
+    var dropdown = wrapper.querySelector(".autocomplete-dropdown");
+    dropdown.style.cssText = "display: none !important;";
     dropdown.innerHTML = "";
     activeIndex = -1;
   }
-});
+})();

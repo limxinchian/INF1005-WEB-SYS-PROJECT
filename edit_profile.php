@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="row g-4">
-                    <!-- LEFT COLUMN — Avatar + Stats -->
+                    <!-- LEFT COLUMN - Avatar + Stats -->
                     <div class="col-md-4">
 
                         <!-- Avatar Card -->
@@ -102,7 +102,7 @@
 
                     </div>
 
-                    <!-- RIGHT COLUMN — Edit Forms -->
+                    <!-- RIGHT COLUMN - Edit Forms -->
                     <div class="col-md-8">
 
                         <!-- Tabs -->
@@ -187,7 +187,7 @@
                                                     class="form-label fw-semibold">
                                                     Upload Avatar
                                                     <span class="text-muted fw-normal">
-                                                        (optional — JPG, PNG, GIF, max 2 MB)
+                                                        (optional - JPG, PNG, GIF, max 2 MB)
                                                     </span>
                                                 </label>
                                                 <input

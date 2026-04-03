@@ -22,7 +22,7 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     redirect('../forgot-password.php');
 }
 
-// Always show same message — never reveal if email exists
+// Always show same message - never reveal if email exists
 $genericMessage = 'If that email is registered, a reset link has been sent. Please check your inbox.';
 
 // Look up user
@@ -42,7 +42,7 @@ try {
     redirect('../forgot-password.php');
 }
 
-// Email not found — show generic message anyway
+// Email not found - show generic message anyway
 if (!$user) {
     setFlash('info', $genericMessage);
     redirect('../forgot-password.php');
@@ -52,7 +52,7 @@ if (!$user) {
 $resetToken  = bin2hex(random_bytes(32));
 $tokenExpiry = date('Y-m-d H:i:s', time() + 3600);
 
-// Store token directly in users table — no new table needed
+// Store token directly in users table - no new table needed
 try {
     $stmt = $pdo->prepare("
         UPDATE users
@@ -85,7 +85,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
         $mail = createMailer();
         $mail->addAddress($user['email'], $user['username']);
-        $mail->Subject = 'MealMate — Password Reset Request';
+        $mail->Subject = 'MealMate - Password Reset Request';
         $mail->isHTML(true);
 
         $mail->Body = '
@@ -140,7 +140,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
         error_log('Reset email send error: ' . $e->getMessage());
     }
 } else {
-    error_log('Composer vendor not found — reset email skipped.');
+    error_log('Composer vendor not found - reset email skipped.');
 }
 
 setFlash('info', $genericMessage);

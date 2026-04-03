@@ -100,7 +100,7 @@ function showFlash(): void {
             {$message}
             <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
         </div>";
-        unset($_SESSION['flash']); // clear after showing — shows only once
+        unset($_SESSION['flash']); // clear after showing - shows only once
     }
 }
 

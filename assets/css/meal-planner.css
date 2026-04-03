@@ -39,8 +39,18 @@
   color: grey;
 }
 
+.meal-cell {
+  position: relative;
+}
+
 table {
   table-layout: fixed;
+  overflow: visible;
+}
+
+table td {
+  overflow: visible;
+  position: relative;
 }
 
 table td:first-child,
@@ -50,7 +60,6 @@ table th:first-child {
 
 table td,
 table th {
-  overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
 }

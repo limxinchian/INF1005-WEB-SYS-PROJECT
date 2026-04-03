@@ -75,7 +75,7 @@ try {
 }
 
 // Verify password
-// Same message for wrong email or wrong password — security best practice
+// Same message for wrong email or wrong password - security best practice
 if (!$user || !password_verify($password, $user['password_hash'])) {
     setFlash('danger', 'Incorrect email or password. Please try again.');
     redirect('./login.php?email=' . urlencode($email));
